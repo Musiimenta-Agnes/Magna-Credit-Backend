@@ -1,36 +1,38 @@
 <?php
 
+
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cross-Origin Resource Sharing (CORS) Configuration
-    |--------------------------------------------------------------------------
-    |
-    | This configuration allows your frontend app (Flutter Web / Mobile)
-    | to make requests to this backend without CORS issues.
-    |
-    */
-
-    'paths' => ['api/*'], // All API routes are allowed
-
-    'allowed_methods' => ['*'], // Allow GET, POST, PUT, DELETE, PATCH, etc.
-
-    'allowed_origins' => [
-        'http://localhost:5173', // Flutter Web default dev server
-        'http://127.0.0.1:5173',
-        'http://localhost:8000', // Optional if testing locally
-        '*'                      // Allow all origins during development
-    ],
-
+    'paths' => ['api/*'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => ['*'],   // tighten this in production
     'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'], // Accept all headers from frontend
-
+    'allowed_headers' => ['*'],
     'exposed_headers' => [],
-
     'max_age' => 0,
-
-    'supports_credentials' => true, // If you use cookies / auth later
-
+    'supports_credentials' => false,
 ];
+
+
+
+
+
+
+
+
+// return [
+//     'paths' => ['api/*'],
+
+//     'allowed_methods' => ['*'],
+
+//     'allowed_origins' => ['*'],  // or restrict to: ['http://localhost:58778']
+
+//     'allowed_origins_patterns' => [],
+
+//     'allowed_headers' => ['*'],
+
+//     'exposed_headers' => [],
+
+//     'max_age' => 0,
+
+//     'supports_credentials' => false,
+// ];
