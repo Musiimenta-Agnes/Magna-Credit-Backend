@@ -10,12 +10,21 @@ class Kernel extends HttpKernel
      * Global HTTP middleware stack.
      */
     protected $middleware = [
-        \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-    ];
+    \Illuminate\Http\Middleware\HandleCors::class,
+    \Illuminate\Foundation\Http\Middleware\TrustProxies::class,
+    \Illuminate\Http\Middleware\ValidatePostSize::class,
+    \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class,
+    \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+    \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
+    \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+];
+    // protected $middleware = [
+    //     \Illuminate\Http\Middleware\HandleCors::class,
+    //     \App\Http\Middleware\TrustProxies::class,
+    //     \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+    //     \App\Http\Middleware\TrimStrings::class,
+    //     \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    // ];
 
     /**
      * Route middleware groups.
