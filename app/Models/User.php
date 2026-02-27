@@ -1,6 +1,10 @@
 <?php
 
+
+
 namespace App\Models;
+use App\Models\UserProfile; 
+
 
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+
 
 class User extends Authenticatable
 {
@@ -65,20 +70,20 @@ class User extends Authenticatable
     // 🔹 Relationships
 
     /**
-     * One-to-one relationship with Profile
-     */
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
-    /**
      * One-to-many relationship with Loan
      */
     public function loans()
     {
         return $this->hasMany(Loan::class);
     }
+
+
+    // ── ADD THIS inside your existing User class ──
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
 }
       
 

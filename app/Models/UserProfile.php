@@ -4,17 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Profile extends Model
+class UserProfile extends Model
 {
     protected $fillable = [
         'user_id',
-        'other_contact',
-        'address',
         'bio',
+        'address',
+        'other_contact',
+        'kin_name',
+        'kin_contact',
+        'income',
+        'current_address',
         'gender',
         'occupation',
+        'loan_type',
         'education',
-        'profile_image'
+        'profile_image',
     ];
 
     public function user()
