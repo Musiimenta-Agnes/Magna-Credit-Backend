@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Foundation\Application;
@@ -15,11 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->prependToGroup('api', HandleCors::class);
-        $middleware->prependToGroup('web', HandleCors::class);
+
+        // ✅ Enable Laravel CORS
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
+
+        // ✅ Disable CSRF for API routes
+        $middleware->validateCsrfTokens(except: ['*']);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // ── Return proper JSON with correct status codes for all API routes ──
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
                 $statusCode = $e instanceof HttpException
@@ -32,8 +35,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], $statusCode);
             }
         });
-    })->create();
-
-
-
-
+    })
+    ->create();

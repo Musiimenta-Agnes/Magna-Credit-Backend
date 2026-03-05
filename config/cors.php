@@ -2,9 +2,10 @@
 
 
 return [
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'],   // tighten this in production
+    'allowed_origins' => ['http://localhost:57799'],
+    // 'allowed_origins' => ['*'],   // tighten this in production
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
@@ -15,24 +16,3 @@ return [
 
 
 
-
-
-
-
-// return [
-//     'paths' => ['api/*'],
-
-//     'allowed_methods' => ['*'],
-
-//     'allowed_origins' => ['*'],  // or restrict to: ['http://localhost:58778']
-
-//     'allowed_origins_patterns' => [],
-
-//     'allowed_headers' => ['*'],
-
-//     'exposed_headers' => [],
-
-//     'max_age' => 0,
-
-//     'supports_credentials' => false,
-// ];

@@ -1,0 +1,198 @@
+/* --- Magna Credit Theme --- */
+
+/* -- Sidebar base -- */
+.fi-sidebar {
+    background: #0076D6 !important;
+    border-right: none !important;
+}
+
+.fi-sidebar-header {
+    background: rgba(0,0,0,0.10) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.20) !important;
+}
+
+.fi-sidebar-header * { color: #ffffff !important; }
+
+/* -- Force white on everything -- */
+.fi-sidebar * { color: #ffffff !important; }
+.fi-sidebar svg { color: #ffffff !important; width: 20px !important; height: 20px !important; }
+
+/* -- REMOVE all group container backgrounds/borders -- */
+.fi-sidebar-group,
+.fi-sidebar-group-items,
+[class*="fi-sidebar-group"],
+.fi-sidebar-group > div,
+.fi-sidebar-group-items > div {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* -- Group labels - bold heading style, same indent as links -- */
+.fi-sidebar-group-label,
+.fi-sidebar-group > .fi-sidebar-group-label,
+[class*="fi-sidebar-group-label"] {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    padding: 18px 22px 6px 22px !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 0.75 !important;
+}
+
+/* -- Nav item links - clean, no box -- */
+.fi-sidebar-item a,
+.fi-sidebar-item > a,
+nav .fi-sidebar-item a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    border-radius: 8px !important;
+    margin: 2px 12px !important;
+    padding: 11px 12px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: background 0.18s ease !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+}
+
+.fi-sidebar-item a * { color: #ffffff !important; background: transparent !important; }
+.fi-sidebar-item a svg { color: #ffffff !important; }
+
+/* -- Hover -- */
+.fi-sidebar-item a:hover {
+    background: rgba(255,255,255,0.18) !important;
+    background-color: rgba(255,255,255,0.18) !important;
+}
+.fi-sidebar-item a:hover * { color: #ffffff !important; }
+
+/* -- Active - just slightly darker, NO box -- */
+.fi-sidebar-item a[aria-current="page"] {
+    background: rgba(0,0,0,0.20) !important;
+    background-color: rgba(0,0,0,0.20) !important;
+    border-left: 3px solid #00CB5E !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+.fi-sidebar-item a[aria-current="page"] * {
+    color: #ffffff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* -- Badges - plain gold number, no box -- */
+.fi-sidebar .fi-badge,
+.fi-sidebar [class*="badge"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #FFD700 !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    padding: 0 2px !important;
+}
+
+/* -- Scrollbar -- */
+.fi-sidebar::-webkit-scrollbar { width: 4px; }
+.fi-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+
+/* --------------------------------
+   MAIN CONTENT
+-------------------------------- */
+
+.fi-topbar {
+    background: #ffffff !important;
+    border-bottom: 2px solid #0076D6 !important;
+    box-shadow: 0 1px 4px rgba(0,118,214,0.08) !important;
+}
+
+.fi-main, .fi-body { background: #f4f8ff !important; }
+
+.fi-header-heading {
+    font-weight: 700 !important;
+    color: #0076D6 !important;
+    text-align: center !important;
+    width: 100% !important;
+    display: block !important;
+    font-size: 24px !important;
+}
+
+.fi-header, .fi-page-header, .fi-page-header .fi-header-heading-group {
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* -- Buttons -- */
+.fi-btn { border-radius: 8px !important; font-weight: 600 !important; font-size: 13px !important; }
+
+.fi-btn-color-primary, .fi-btn[class*="primary"] {
+    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+}
+.fi-btn-color-primary:hover { background: #00a84e !important; }
+
+.fi-btn-color-success, .fi-btn[class*="success"] {
+    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+}
+.fi-btn-color-success:hover { background: #00a84e !important; }
+
+.fi-btn-color-info, .fi-btn[class*="info"] {
+    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+}
+
+.fi-btn-color-danger, .fi-btn[class*="danger"] {
+    background: #e53e3e !important; border-color: #e53e3e !important; color: #ffffff !important;
+}
+
+.fi-btn-color-warning, .fi-btn[class*="warning"] {
+    background: #f59e0b !important; border-color: #f59e0b !important; color: #ffffff !important;
+}
+
+/* -- Table -- */
+.fi-ta-table { border-radius: 12px !important; overflow: hidden !important; border: 1px solid #d1fae5 !important; }
+
+.fi-ta-header-cell {
+    background: #00CB5E !important; color: #ffffff !important;
+    font-size: 12px !important; font-weight: 700 !important;
+    text-transform: uppercase !important; letter-spacing: 0.06em !important; padding: 14px 16px !important;
+}
+.fi-ta-header-cell * { color: #ffffff !important; }
+.fi-ta-header-cell svg { color: rgba(255,255,255,0.8) !important; }
+
+.fi-ta-row:nth-child(even) td { background: #f0fff8 !important; }
+.fi-ta-row:nth-child(odd) td { background: #ffffff !important; }
+.fi-ta-row:hover td { background: #dcfce7 !important; }
+.fi-ta-row td { border-bottom: 1px solid #d1fae5 !important; color: #1e293b !important; font-size: 13.5px !important; }
+
+.fi-badge-color-success { background: #d1fae5 !important; color: #065f46 !important; }
+.fi-badge-color-warning { background: #fef3c7 !important; color: #92400e !important; }
+.fi-badge-color-danger  { background: #fee2e2 !important; color: #991b1b !important; }
+.fi-badge-color-info    { background: #dbeafe !important; color: #1e40af !important; }
+
+.fi-section, .fi-card {
+    border-radius: 12px !important; border: 1px solid #d1fae5 !important;
+    box-shadow: 0 1px 4px rgba(0,203,94,0.08) !important;
+}
+.fi-section-header-heading { color: #0076D6 !important; font-weight: 700 !important; }
+
+.fi-pagination-item-btn[aria-current="page"] {
+    background: #00CB5E !important; color: #ffffff !important; border-color: #00CB5E !important;
+}
+.fi-pagination-item-btn:hover {
+    background: #dcfce7 !important; border-color: #00CB5E !important; color: #00CB5E !important;
+}
