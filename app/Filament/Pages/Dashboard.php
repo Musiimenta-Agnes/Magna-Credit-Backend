@@ -9,7 +9,7 @@ class Dashboard extends BaseDashboard
 {
     public function getTitle(): string|Htmlable
     {
-        return 'Magna Credit Dashboard';
+        return 'Welcome to Magna Credit Dashboard';
     }
 
     public function getWidgets(): array
