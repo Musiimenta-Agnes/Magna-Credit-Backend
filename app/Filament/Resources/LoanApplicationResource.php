@@ -3,6 +3,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LoanApplicationResource\Pages;
 use App\Models\LoanApplication;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -41,11 +42,13 @@ class LoanApplicationResource extends Resource
                     TextInput::make('other_contact'),
                     Textarea::make('bio_info')->columnSpanFull(),
                 ])->columns(2),
+
             Section::make('Next of Kin')
                 ->schema([
                     TextInput::make('kin_name'),
                     TextInput::make('kin_contact'),
                 ])->columns(2),
+
             Section::make('Loan Details')
                 ->schema([
                     TextInput::make('loan_type')->required(),
@@ -56,6 +59,7 @@ class LoanApplicationResource extends Resource
                     TextInput::make('education'),
                     TextInput::make('address'),
                 ])->columns(2),
+
             Section::make('Loan Status')
                 ->schema([
                     Select::make('status')
@@ -70,6 +74,14 @@ class LoanApplicationResource extends Resource
                     Textarea::make('rejection_reason')->columnSpanFull()
                         ->disabled(fn () => !Auth::user()?->hasRole('super_admin')),
                 ])->columns(2),
+
+            Section::make('Identity & Collateral Documents')
+                ->description('Documents submitted by the applicant via the mobile app.')
+                ->schema([
+                    ViewField::make('documents_viewer')
+                        ->view('filament.components.loan-images')
+                        ->columnSpanFull(),
+                ])->columns(1),
         ]);
     }
 

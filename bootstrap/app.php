@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Middleware\HandleCors;
+// use Illuminate\Http\Middleware\HandleCors;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,10 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-        // ✅ Enable Laravel CORS
-        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
-
-        // ✅ Disable CSRF for API routes
+        // Disable CSRF for API routes
         $middleware->validateCsrfTokens(except: ['*']);
 
     })

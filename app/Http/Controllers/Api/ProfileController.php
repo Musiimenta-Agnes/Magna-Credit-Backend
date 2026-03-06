@@ -1,25 +1,21 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\LoanApplication;
+use App\Models\Repayment;
 
 class ProfileController extends Controller
 {
-    /**
-     * GET /api/profile
-     * Called by Flutter ProfilePage on load (_loadProfile)
-     */
     public function show(Request $request)
     {
         $user = $request->user()->load('profile');
-
         return response()->json([
-            'name'  => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone ?? '',
+            'name'    => $user->name,
+            'email'   => $user->email,
+            'phone'   => $user->phone ?? '',
             'profile' => $user->profile ? [
                 'bio'             => $user->profile->bio ?? '',
                 'address'         => $user->profile->address ?? '',
@@ -33,16 +29,78 @@ class ProfileController extends Controller
                 'loan_type'       => $user->profile->loan_type ?? '',
                 'education'       => $user->profile->education ?? '',
                 'profile_image'   => $user->profile->profile_image
-                    ? Storage::url($user->profile->profile_image)
-                    : null,
+                    ? Storage::url($user->profile->profile_image) : null,
             ] : null,
         ]);
     }
 
-    /**
-     * PATCH /api/profile
-     * Called by Flutter ProfilePage when user taps Save
-     */
+    public function dashboard(Request $request)
+    {
+        $user = $request->user();
+
+        $loans = LoanApplication::where('user_id', $user->id)->latest()->get();
+
+        $totalLoans     = $loans->count();
+        $pendingLoans   = $loans->where('status', 'pending')->count();
+        $approvedLoans  = $loans->where('status', 'approved')->count();
+        $disbursedLoans = $loans->where('status', 'disbursed')->count();
+        $rejectedLoans  = $loans->where('status', 'rejected')->count();
+        $repayingLoans  = $loans->where('status', 'repaying')->count();
+        $completedLoans = $loans->where('status', 'completed')->count();
+
+        $totalBorrowed = $loans->whereIn('status', ['disbursed', 'repaying', 'completed'])->sum('loan_amount');
+        $totalRepaid   = Repayment::where('user_id', $user->id)->sum('amount');
+        $totalBalance  = $totalBorrowed - $totalRepaid;
+
+        $recentLoans = $loans->take(5)->map(fn($app) => [
+            'id'           => $app->id,
+            'loan_type'    => $app->loan_type,
+            'loan_amount'  => $app->loan_amount,
+            'status'       => $app->status,
+            'can_edit'     => $app->status === 'pending',
+            'total_repaid' => $app->total_repaid,
+            'balance'      => $app->balance,
+            'due_date'     => $app->due_date,
+            'created_at'   => $app->created_at,
+        ]);
+
+        $recentRepayments = Repayment::where('user_id', $user->id)
+            ->with('loanApplication:id,loan_type')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(fn($r) => [
+                'id'             => $r->id,
+                'loan_type'      => $r->loanApplication->loan_type ?? '',
+                'amount'         => $r->amount,
+                'payment_method' => $r->payment_method,
+                'payment_date'   => $r->payment_date,
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'name'  => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+            ],
+            'summary' => [
+                'total_loans'     => $totalLoans,
+                'pending'         => $pendingLoans,
+                'approved'        => $approvedLoans,
+                'disbursed'       => $disbursedLoans,
+                'rejected'        => $rejectedLoans,
+                'repaying'        => $repayingLoans,
+                'completed'       => $completedLoans,
+                'total_borrowed'  => $totalBorrowed,
+                'total_repaid'    => $totalRepaid,
+                'total_balance'   => $totalBalance,
+            ],
+            'recent_loans'      => $recentLoans,
+            'recent_repayments' => $recentRepayments,
+        ]);
+    }
+
     public function update(Request $request)
     {
         $request->validate([
@@ -63,53 +121,33 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
-
-        // Update name and phone on the users table
         $user->update($request->only(['name', 'phone']));
 
-        // Handle profile image upload
         $imagePath = null;
         if ($request->hasFile('profile_image')) {
-            // Delete old image to save storage space
             if ($user->profile?->profile_image) {
                 Storage::disk('public')->delete($user->profile->profile_image);
             }
-            $imagePath = $request->file('profile_image')
-                ->store('profile_images', 'public');
+            $imagePath = $request->file('profile_image')->store('profile_images', 'public');
         }
 
-        // Gather all profile fields
         $profileData = $request->only([
-            'bio', 'address', 'other_contact',
-            'kin_name', 'kin_contact', 'income',
-            'current_address', 'gender', 'occupation',
-            'loan_type', 'education',
+            'bio', 'address', 'other_contact', 'kin_name', 'kin_contact',
+            'income', 'current_address', 'gender', 'occupation', 'loan_type', 'education',
         ]);
 
-        if ($imagePath) {
-            $profileData['profile_image'] = $imagePath;
-        }
+        if ($imagePath) $profileData['profile_image'] = $imagePath;
 
-        // Create the profile row if it doesn't exist, otherwise update it
-        $user->profile()->updateOrCreate(
-            ['user_id' => $user->id],
-            $profileData
-        );
+        $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
 
-        // Return the updated profile so Flutter refreshes the page
         return $this->show($request);
     }
 
-    /**
-     * Called by LoanApplicationController after loan is submitted.
-     * This is what makes loan form data appear on the profile page automatically.
-     */
     public function syncFromLoanApplication($user, array $loanData): void
     {
-        // Map: loan form field name => profile field name
         $map = [
-            'full_name'      => 'name',           // → users.name
-            'phone'          => 'phone',           // → users.phone
+            'full_name'      => 'name',
+            'phone'          => 'phone',
             'address'        => 'address',
             'other_contact'  => 'other_contact',
             'kin_name'       => 'kin_name',
@@ -122,7 +160,7 @@ class ProfileController extends Controller
             'education'      => 'education',
         ];
 
-        $userUpdate    = [];
+        $userUpdate = [];
         $profileUpdate = [];
 
         foreach ($map as $loanField => $profileField) {
@@ -136,10 +174,7 @@ class ProfileController extends Controller
 
         if (!empty($userUpdate))    $user->update($userUpdate);
         if (!empty($profileUpdate)) {
-            $user->profile()->updateOrCreate(
-                ['user_id' => $user->id],
-                $profileUpdate
-            );
+            $user->profile()->updateOrCreate(['user_id' => $user->id], $profileUpdate);
         }
     }
 }
