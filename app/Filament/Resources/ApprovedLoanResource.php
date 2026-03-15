@@ -1,7 +1,10 @@
 <?php
+
 namespace App\Filament\Resources;
+
 use App\Models\LoanApplication;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
@@ -15,14 +18,14 @@ use Illuminate\Support\Facades\Auth;
 class ApprovedLoanResource extends Resource
 {
     protected static ?string $model = LoanApplication::class;
-    protected static ?int $navigationSort = 2;
     protected static ?string $slug = 'approved-loans';
     protected static ?string $modelLabel = 'Approved Loan';
     protected static ?string $pluralModelLabel = 'Approved Loans';
 
     public static function getNavigationLabel(): string { return 'Approved Loans'; }
-    public static function getNavigationGroup(): ?string { return 'Loan Management'; }
     public static function getNavigationIcon(): string { return 'heroicon-o-check-badge'; }
+    public static function getNavigationGroup(): string { return 'Loan Management'; }
+    public static function getNavigationSort(): int { return 2; }
 
     public static function getEloquentQuery(): Builder
     {
@@ -34,11 +37,14 @@ class ApprovedLoanResource extends Resource
         return (string) static::getEloquentQuery()->count() ?: null;
     }
 
-    public static function getNavigationBadgeColor(): string { return 'success'; }
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'success';
+    }
 
     public static function form(Schema $schema): Schema
     {
-        return LoanApplicationResource::form($schema);
+        return app(LoanApplicationResource::class)::form($schema);
     }
 
     public static function table(Table $table): Table
@@ -67,6 +73,13 @@ class ApprovedLoanResource extends Resource
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\LoanApplicationResource\RelationManagers\RepaymentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

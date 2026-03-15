@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Filament\Resources;
+
 use App\Models\LoanApplication;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -13,14 +15,14 @@ use Illuminate\Support\Facades\Auth;
 class DisbursedLoanResource extends Resource
 {
     protected static ?string $model = LoanApplication::class;
-    protected static ?int $navigationSort = 3;
     protected static ?string $slug = 'disbursed-loans';
     protected static ?string $modelLabel = 'Disbursed Loan';
     protected static ?string $pluralModelLabel = 'Disbursed Loans';
 
     public static function getNavigationLabel(): string { return 'Disbursed Loans'; }
-    public static function getNavigationGroup(): ?string { return 'Loan Management'; }
     public static function getNavigationIcon(): string { return 'heroicon-o-banknotes'; }
+    public static function getNavigationGroup(): string { return 'Loan Management'; }
+    public static function getNavigationSort(): int { return 3; }
 
     public static function getEloquentQuery(): Builder
     {
@@ -32,11 +34,14 @@ class DisbursedLoanResource extends Resource
         return (string) static::getEloquentQuery()->count() ?: null;
     }
 
-    public static function getNavigationBadgeColor(): string { return 'info'; }
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'info';
+    }
 
     public static function form(Schema $schema): Schema
     {
-        return LoanApplicationResource::form($schema);
+        return app(LoanApplicationResource::class)::form($schema);
     }
 
     public static function table(Table $table): Table
@@ -50,10 +55,19 @@ class DisbursedLoanResource extends Resource
                 TextColumn::make('disbursement_date')->date()->sortable()->label('Disbursed On'),
                 TextColumn::make('due_date')->date()->sortable()->label('Due Date'),
             ])
-            ->actions([EditAction::make()])
+            ->actions([
+                EditAction::make(),
+            ])
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\LoanApplicationResource\RelationManagers\RepaymentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Filament\Resources;
+
 use App\Models\LoanApplication;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\Action;
@@ -16,14 +18,14 @@ use Illuminate\Support\Facades\Auth;
 class PendingLoanResource extends Resource
 {
     protected static ?string $model = LoanApplication::class;
-    protected static ?int $navigationSort = 1;
     protected static ?string $slug = 'pending-loans';
     protected static ?string $modelLabel = 'Pending Loan';
     protected static ?string $pluralModelLabel = 'Pending Loans';
 
     public static function getNavigationLabel(): string { return 'Pending Loans'; }
-    public static function getNavigationGroup(): ?string { return 'Loan Management'; }
     public static function getNavigationIcon(): string { return 'heroicon-o-clock'; }
+    public static function getNavigationGroup(): string { return 'Loan Management'; }
+    public static function getNavigationSort(): int { return 1; }
 
     public static function getEloquentQuery(): Builder
     {
@@ -35,11 +37,14 @@ class PendingLoanResource extends Resource
         return (string) static::getEloquentQuery()->count() ?: null;
     }
 
-    public static function getNavigationBadgeColor(): string { return 'warning'; }
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'warning';
+    }
 
     public static function form(Schema $schema): Schema
     {
-        return LoanApplicationResource::form($schema);
+        return app(LoanApplicationResource::class)::form($schema);
     }
 
     public static function table(Table $table): Table
@@ -59,10 +64,10 @@ class PendingLoanResource extends Resource
                     ->action(fn ($record) => $record->update(['status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation()
                     ->modalHeading('Approve Loan')
-                    ->modalDescription('Are you sure you want to approve this loan?'),
+                    ->modalDescription('Are you sure you want to approve this loan application?'),
                 Action::make('reject')->label('Reject')->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->form([Textarea::make('rejection_reason')->required()->label('Reason')])
+                    ->form([Textarea::make('rejection_reason')->required()->label('Reason for Rejection')])
                     ->action(fn ($record, array $data) => $record->update(['status' => 'rejected', 'rejection_reason' => $data['rejection_reason'], 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation(),
                 EditAction::make(),
@@ -70,6 +75,13 @@ class PendingLoanResource extends Resource
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            \App\Filament\Resources\LoanApplicationResource\RelationManagers\RepaymentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
