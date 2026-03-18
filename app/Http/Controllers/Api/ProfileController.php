@@ -11,7 +11,19 @@ class ProfileController extends Controller
 {
     public function show(Request $request)
     {
-        $user = $request->user()->load('profile');
+        $user = $request->user();
+
+        // Return empty profile when not authenticated
+        if (!$user) {
+            return response()->json([
+                'name'    => '',
+                'email'   => '',
+                'phone'   => '',
+                'profile' => null,
+            ]);
+        }
+
+        $user->load('profile');
         return response()->json([
             'name'    => $user->name,
             'email'   => $user->email,
@@ -37,6 +49,28 @@ class ProfileController extends Controller
     public function dashboard(Request $request)
     {
         $user = $request->user();
+
+        // Return empty dashboard when not authenticated
+        if (!$user) {
+            return response()->json([
+                'success' => true,
+                'user'    => null,
+                'summary' => [
+                    'total_loans'    => 0,
+                    'pending'        => 0,
+                    'approved'       => 0,
+                    'disbursed'      => 0,
+                    'rejected'       => 0,
+                    'repaying'       => 0,
+                    'completed'      => 0,
+                    'total_borrowed' => 0,
+                    'total_repaid'   => 0,
+                    'total_balance'  => 0,
+                ],
+                'recent_loans'      => [],
+                'recent_repayments' => [],
+            ]);
+        }
 
         $loans = LoanApplication::where('user_id', $user->id)->latest()->get();
 
@@ -85,16 +119,16 @@ class ProfileController extends Controller
                 'phone' => $user->phone,
             ],
             'summary' => [
-                'total_loans'     => $totalLoans,
-                'pending'         => $pendingLoans,
-                'approved'        => $approvedLoans,
-                'disbursed'       => $disbursedLoans,
-                'rejected'        => $rejectedLoans,
-                'repaying'        => $repayingLoans,
-                'completed'       => $completedLoans,
-                'total_borrowed'  => $totalBorrowed,
-                'total_repaid'    => $totalRepaid,
-                'total_balance'   => $totalBalance,
+                'total_loans'    => $totalLoans,
+                'pending'        => $pendingLoans,
+                'approved'       => $approvedLoans,
+                'disbursed'      => $disbursedLoans,
+                'rejected'       => $rejectedLoans,
+                'repaying'       => $repayingLoans,
+                'completed'      => $completedLoans,
+                'total_borrowed' => $totalBorrowed,
+                'total_repaid'   => $totalRepaid,
+                'total_balance'  => $totalBalance,
             ],
             'recent_loans'      => $recentLoans,
             'recent_repayments' => $recentRepayments,
@@ -146,21 +180,21 @@ class ProfileController extends Controller
     public function syncFromLoanApplication($user, array $loanData): void
     {
         $map = [
-            'full_name'      => 'name',
-            'phone'          => 'phone',
-            'address'        => 'address',
-            'other_contact'  => 'other_contact',
-            'kin_name'       => 'kin_name',
-            'kin_contact'    => 'kin_contact',
-            'monthly_income' => 'income',
-            'current_address'=> 'current_address',
-            'gender'         => 'gender',
-            'occupation'     => 'occupation',
-            'loan_type'      => 'loan_type',
-            'education'      => 'education',
+            'full_name'       => 'name',
+            'phone'           => 'phone',
+            'address'         => 'address',
+            'other_contact'   => 'other_contact',
+            'kin_name'        => 'kin_name',
+            'kin_contact'     => 'kin_contact',
+            'monthly_income'  => 'income',
+            'current_address' => 'current_address',
+            'gender'          => 'gender',
+            'occupation'      => 'occupation',
+            'loan_type'       => 'loan_type',
+            'education'       => 'education',
         ];
 
-        $userUpdate = [];
+        $userUpdate    = [];
         $profileUpdate = [];
 
         foreach ($map as $loanField => $profileField) {

@@ -22,6 +22,7 @@ class ForgotPasswordMail extends Mailable
      */
     public function __construct($user, $code)
     {
+        $this->user = $user;
         $this->code = $code;
     }
 
@@ -45,3 +46,4 @@ class ForgotPasswordMail extends Mailable
         return [];
     }
 }
+
