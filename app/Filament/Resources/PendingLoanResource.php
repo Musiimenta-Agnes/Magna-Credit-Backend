@@ -51,6 +51,7 @@ class PendingLoanResource extends Resource
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->recordUrl(fn ($record) => auth()->user()?->hasRole('super_admin') ? static::getUrl('edit', ['record' => $record]) : static::getUrl('view', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('contact')->searchable(),

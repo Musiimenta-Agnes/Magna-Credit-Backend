@@ -10,8 +10,8 @@ class ListLoanApplications extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
+        return auth()->user()?->hasRole('super_admin') ? [
             CreateAction::make()->label('New Application'),
-        ];
+        ] : [];
     }
 }
