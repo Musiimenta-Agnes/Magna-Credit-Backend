@@ -9,9 +9,11 @@ class Dashboard extends BaseDashboard
 {
     public function getTitle(): string|Htmlable
     {
-        return 'Welcome to Magna Credit Dashboard';
+        if (auth()->user()?->hasRole('super_admin')) {
+            return 'Welcome to the dashboard, Super Admin!';
+        }
+        return 'Welcome to the dashboard, Loans Officer!';
     }
-
     public function getWidgets(): array
     {
         return [
