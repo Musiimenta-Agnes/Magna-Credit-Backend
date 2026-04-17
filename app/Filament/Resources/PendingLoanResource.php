@@ -100,6 +100,7 @@ class PendingLoanResource extends Resource
         return [
             'index'  => \App\Filament\Resources\PendingLoanResource\Pages\ListPendingLoans::route('/'),
             'create' => \App\Filament\Resources\PendingLoanResource\Pages\CreatePendingLoan::route('/create'),
+            'view'   => \App\Filament\Resources\PendingLoanResource\Pages\ViewPendingLoan::route('/{record}'),
             'edit'   => \App\Filament\Resources\PendingLoanResource\Pages\EditPendingLoan::route('/{record}/edit'),
         ];
     }

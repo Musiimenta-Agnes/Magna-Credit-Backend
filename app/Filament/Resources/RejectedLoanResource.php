@@ -77,6 +77,7 @@ class RejectedLoanResource extends Resource
         return [
             'index'  => \App\Filament\Resources\RejectedLoanResource\Pages\ListRejectedLoans::route('/'),
             'create' => \App\Filament\Resources\RejectedLoanResource\Pages\CreateRejectedLoan::route('/create'),
+            'view'   => \App\Filament\Resources\RejectedLoanResource\Pages\ViewRejectedLoan::route('/{record}'),
             'edit'   => \App\Filament\Resources\RejectedLoanResource\Pages\EditRejectedLoan::route('/{record}/edit'),
         ];
     }
