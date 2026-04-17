@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -47,7 +48,6 @@ class LoanApplicationResource extends Resource
 
         return $schema->components([
 
-            // -- Existing client link (optional) --
             Section::make('Link to Existing Client (Optional)')
                 ->icon('heroicon-o-user-circle')
                 ->collapsible()
@@ -100,11 +100,11 @@ class LoanApplicationResource extends Resource
                     Grid::make(2)->schema([
                         Select::make('loan_type')->label('Loan Type')->required()
                             ->options([
-                                'Logbook Loan'    => 'Logbook Loan',
-                                'Business Loan'   => 'Business Loan',
-                                'Personal Loan'   => 'Personal Loan',
+                                'Logbook Loan'         => 'Logbook Loan',
+                                'Business Loan'        => 'Business Loan',
+                                'Personal Loan'        => 'Personal Loan',
                                 'Asset Financing Loan' => 'Asset Financing Loan',
-                                'Salary Loan'        => 'Salary Loan',
+                                'Salary Loan'          => 'Salary Loan',
                             ])->native(false),
                         TextInput::make('loan_amount')->label('Loan Amount (UGX)')->required()->numeric()->minValue(0),
                         TextInput::make('monthly_income')->label('Monthly Income (UGX)')->required()->numeric()->minValue(0),
@@ -162,6 +162,7 @@ class LoanApplicationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('contact')->searchable(),
@@ -180,9 +181,11 @@ class LoanApplicationResource extends Resource
                 TextColumn::make('created_at')->dateTime()->sortable()->label('Applied'),
             ])
             ->actions([
-                Action::make('approve')->label('Approve')->color('success')
+                Action::make('approve')
+                    ->label('Approve')
+                    ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->visible(fn ($record) => Auth::user()?->hasRole('super_admin') && $record->status === 'pending')
                     ->action(fn ($record) => $record->update([
                         'status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()
                     ]))
@@ -190,9 +193,11 @@ class LoanApplicationResource extends Resource
                     ->modalHeading('Approve Loan')
                     ->modalDescription('Are you sure you want to approve this loan application?'),
 
-                Action::make('reject')->label('Reject')->color('danger')
+                Action::make('reject')
+                    ->label('Reject')
+                    ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn ($record) => $record->status === 'pending')
+                    ->visible(fn ($record) => Auth::user()?->hasRole('super_admin') && $record->status === 'pending')
                     ->form([Textarea::make('rejection_reason')->required()->label('Reason for Rejection')])
                     ->action(fn ($record, array $data) => $record->update([
                         'status' => 'rejected', 'rejection_reason' => $data['rejection_reason'],
@@ -200,9 +205,11 @@ class LoanApplicationResource extends Resource
                     ]))
                     ->requiresConfirmation(),
 
-                Action::make('disburse')->label('Disburse')->color('info')
+                Action::make('disburse')
+                    ->label('Disburse')
+                    ->color('info')
                     ->icon('heroicon-o-banknotes')
-                    ->visible(fn ($record) => $record->status === 'approved')
+                    ->visible(fn ($record) => Auth::user()?->hasRole('super_admin') && $record->status === 'approved')
                     ->form([
                         DatePicker::make('disbursement_date')->required()->default(now())->label('Disbursement Date'),
                         DatePicker::make('due_date')->required()->label('Due Date'),
@@ -216,9 +223,10 @@ class LoanApplicationResource extends Resource
                     ->modalHeading('Disburse Loan')
                     ->modalDescription('Confirm disbursement details before proceeding.'),
 
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
 
-                \Filament\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->visible(fn () => Auth::user()?->hasRole('super_admin')),
             ])
             ->bulkActions([

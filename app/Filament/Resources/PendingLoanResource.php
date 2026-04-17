@@ -50,6 +50,7 @@ class PendingLoanResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('contact')->searchable(),
@@ -59,18 +60,27 @@ class PendingLoanResource extends Resource
                 TextColumn::make('created_at')->dateTime()->sortable()->label('Applied'),
             ])
             ->actions([
-                Action::make('approve')->label('Approve')->color('success')
+                Action::make('approve')
+                    ->label('Approve')
+                    ->color('success')
                     ->icon('heroicon-o-check-circle')
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
                     ->action(fn ($record) => $record->update(['status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation()
                     ->modalHeading('Approve Loan')
                     ->modalDescription('Are you sure you want to approve this loan application?'),
-                Action::make('reject')->label('Reject')->color('danger')
+                Action::make('reject')
+                    ->label('Reject')
+                    ->color('danger')
                     ->icon('heroicon-o-x-circle')
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
                     ->form([Textarea::make('rejection_reason')->required()->label('Reason for Rejection')])
                     ->action(fn ($record, array $data) => $record->update(['status' => 'rejected', 'rejection_reason' => $data['rejection_reason'], 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                DeleteAction::make()
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),

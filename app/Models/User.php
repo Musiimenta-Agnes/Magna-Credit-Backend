@@ -51,7 +51,7 @@ class User extends Authenticatable implements FilamentUser
     // Only super_admin and admin can access the portal
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(['super_admin', 'admin']);
+        return $this->hasRole(['super_admin', 'admin', 'loans_officer']);
     }
 
     public function loans()
