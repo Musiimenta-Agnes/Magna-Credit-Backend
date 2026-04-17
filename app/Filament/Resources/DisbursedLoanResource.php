@@ -77,6 +77,7 @@ class DisbursedLoanResource extends Resource
         return [
             'index'  => \App\Filament\Resources\DisbursedLoanResource\Pages\ListDisbursedLoans::route('/'),
             'create' => \App\Filament\Resources\DisbursedLoanResource\Pages\CreateDisbursedLoan::route('/create'),
+            'view'   => \App\Filament\Resources\DisbursedLoanResource\Pages\ViewDisbursedLoan::route('/{record}'),
             'edit'   => \App\Filament\Resources\DisbursedLoanResource\Pages\EditDisbursedLoan::route('/{record}/edit'),
         ];
     }

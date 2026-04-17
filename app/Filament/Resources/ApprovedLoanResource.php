@@ -85,6 +85,7 @@ class ApprovedLoanResource extends Resource
         return [
             'index'  => \App\Filament\Resources\ApprovedLoanResource\Pages\ListApprovedLoans::route('/'),
             'create' => \App\Filament\Resources\ApprovedLoanResource\Pages\CreateApprovedLoan::route('/create'),
+            'view'   => \App\Filament\Resources\ApprovedLoanResource\Pages\ViewApprovedLoan::route('/{record}'),
             'edit'   => \App\Filament\Resources\ApprovedLoanResource\Pages\EditApprovedLoan::route('/{record}/edit'),
         ];
     }
