@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
 class AuthController extends Controller
 {
     /**
@@ -18,18 +15,15 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:20|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
         ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
             'status' => true,
             'message' => 'User registered successfully',
@@ -44,34 +38,28 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'phone' => 'required|string',
+            'email'    => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Check if user exists with exact email and phone
-        $user = User::where('email', $request->email)
-                    ->where('phone', $request->phone)
-                    ->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'status' => false,
-                'message' => 'Invalid email, phone, or password'
+                'status'  => false,
+                'message' => 'Invalid email or password'
             ], 401);
         }
 
-        // Delete old tokens (recommended)
         $user->tokens()->delete();
 
-        // Create new token
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'status' => true,
+            'status'  => true,
             'message' => 'Login successful',
-            'token' => $token,
-            'user' => $user
+            'token'   => $token,
+            'user'    => $user
         ], 200);
     }
 }
