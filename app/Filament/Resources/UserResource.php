@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Filament\Resources;
+
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Schemas\Components\Section;
@@ -21,6 +23,31 @@ class UserResource extends Resource
     public static function getNavigationLabel(): string { return 'Clients'; }
     public static function getNavigationIcon(): string { return 'heroicon-o-users'; }
     public static function getNavigationSort(): ?int { return 1; }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canView($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -54,11 +81,11 @@ class UserResource extends Resource
             ])
             ->filters([])
             ->actions([
-                EditAction::make()->visible(fn () => Auth::user()?->hasPermissionTo('edit clients')),
-                DeleteAction::make()->visible(fn () => Auth::user()?->hasPermissionTo('delete clients')),
+                EditAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                DeleteAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
             ]);
     }
 
