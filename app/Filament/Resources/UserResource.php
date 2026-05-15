@@ -26,7 +26,7 @@ class UserResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function canCreate(): bool
@@ -46,7 +46,7 @@ class UserResource extends Resource
 
     public static function canView($record): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function form(Schema $schema): Schema
@@ -68,8 +68,18 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
+
         return $table
             ->defaultSort('created_at', 'desc')
+            // exclude all admin-role users from the clients list
+            ->modifyQueryUsing(fn ($query) => $query->whereDoesntHave('roles', fn ($q) =>
+                $q->whereIn('name', ['super_admin', 'admin', 'loans_officer'])
+            ))
+            ->recordUrl(fn ($record) => $isAdmin()
+                ? static::getUrl('edit', ['record' => $record])
+                : static::getUrl('view', ['record' => $record])
+            )
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('email')->searchable(),
@@ -81,11 +91,13 @@ class UserResource extends Resource
             ])
             ->filters([])
             ->actions([
-                EditAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
-                DeleteAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                EditAction::make()
+                    ->visible(fn () => $isAdmin()),
+                DeleteAction::make()
+                    ->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                DeleteBulkAction::make()->visible(fn () => $isAdmin()),
             ]);
     }
 

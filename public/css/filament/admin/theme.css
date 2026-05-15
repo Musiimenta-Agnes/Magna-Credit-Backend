@@ -1,23 +1,31 @@
-/* --- Magna Credit Theme --- */
+/* ============================================
+   MAGNA CREDIT — PREMIUM THEME
+   ============================================ */
 
-/* -- Sidebar base -- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* { font-family: 'Inter', sans-serif !important; }
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
 .fi-sidebar {
-    background: #0076D6 !important;
+    background: linear-gradient(180deg, #003d7a 0%, #0055aa 40%, #0076D6 100%) !important;
     border-right: none !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15) !important;
 }
 
 .fi-sidebar-header {
-    background: rgba(0,0,0,0.10) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.20) !important;
+    background: rgba(0,0,0,0.15) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+    padding: 20px 16px !important;
 }
 
 .fi-sidebar-header * { color: #ffffff !important; }
-
-/* -- Force white on everything -- */
 .fi-sidebar * { color: #ffffff !important; }
-.fi-sidebar svg { color: #ffffff !important; width: 20px !important; height: 20px !important; }
+.fi-sidebar svg { color: #ffffff !important; width: 18px !important; height: 18px !important; }
 
-/* -- REMOVE all group container backgrounds/borders -- */
+/* Group containers */
 .fi-sidebar-group,
 .fi-sidebar-group-items,
 [class*="fi-sidebar-group"],
@@ -32,167 +40,468 @@
     border-radius: 0 !important;
 }
 
-/* -- Group labels - bold heading style, same indent as links -- */
+/* Group labels */
 .fi-sidebar-group-label,
 .fi-sidebar-group > .fi-sidebar-group-label,
 [class*="fi-sidebar-group-label"] {
     display: block !important;
-    color: #ffffff !important;
-    font-size: 11px !important;
-    font-weight: 800 !important;
+    color: rgba(255,255,255,0.5) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.12em !important;
-    padding: 18px 22px 6px 22px !important;
+    letter-spacing: 0.14em !important;
+    padding: 20px 20px 6px 20px !important;
     background: transparent !important;
     border: none !important;
-    opacity: 0.75 !important;
 }
 
-/* -- Nav item links - clean, no box -- */
+/* Nav items */
 .fi-sidebar-item a,
 .fi-sidebar-item > a,
 nav .fi-sidebar-item a {
     display: flex !important;
     align-items: center !important;
     gap: 10px !important;
-    border-radius: 8px !important;
-    margin: 2px 12px !important;
-    padding: 11px 12px !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    transition: background 0.18s ease !important;
+    border-radius: 10px !important;
+    margin: 2px 10px !important;
+    padding: 10px 12px !important;
+    color: rgba(255,255,255,0.85) !important;
+    font-weight: 500 !important;
+    font-size: 13.5px !important;
+    transition: all 0.18s ease !important;
     background: transparent !important;
-    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     text-decoration: none !important;
 }
 
-.fi-sidebar-item a * { color: #ffffff !important; background: transparent !important; }
-.fi-sidebar-item a svg { color: #ffffff !important; }
-
-/* -- Hover -- */
 .fi-sidebar-item a:hover {
-    background: rgba(255,255,255,0.18) !important;
-    background-color: rgba(255,255,255,0.18) !important;
-}
-.fi-sidebar-item a:hover * { color: #ffffff !important; }
-
-/* -- Active - just slightly darker, NO box -- */
-.fi-sidebar-item a[aria-current="page"] {
-    background: rgba(0,0,0,0.20) !important;
-    background-color: rgba(0,0,0,0.20) !important;
-    border-left: 3px solid #00CB5E !important;
+    background: rgba(255,255,255,0.12) !important;
     color: #ffffff !important;
-    box-shadow: none !important;
+}
+
+.fi-sidebar-item a[aria-current="page"] {
+    background: rgba(255,255,255,0.18) !important;
+    border-left: 3px solid #00E676 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
 }
 
 .fi-sidebar-item a[aria-current="page"] * {
     color: #ffffff !important;
-    background: transparent !important;
-    background-color: transparent !important;
 }
 
-/* -- Badges - plain gold number, no box -- */
+/* Badges */
 .fi-sidebar .fi-badge,
 .fi-sidebar [class*="badge"] {
-    background: transparent !important;
-    background-color: transparent !important;
+    background: rgba(255,255,255,0.15) !important;
     border: none !important;
-    box-shadow: none !important;
     color: #FFD700 !important;
     font-weight: 800 !important;
-    font-size: 13px !important;
-    padding: 0 2px !important;
+    font-size: 11px !important;
+    padding: 2px 7px !important;
+    border-radius: 20px !important;
 }
 
-/* -- Scrollbar -- */
-.fi-sidebar::-webkit-scrollbar { width: 4px; }
-.fi-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+/* Scrollbar */
+.fi-sidebar::-webkit-scrollbar { width: 3px; }
+.fi-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
-/* --------------------------------
-   MAIN CONTENT
--------------------------------- */
-
+/* ============================================
+   TOPBAR
+   ============================================ */
 .fi-topbar {
     background: #ffffff !important;
-    border-bottom: 2px solid #0076D6 !important;
-    box-shadow: 0 1px 4px rgba(0,118,214,0.08) !important;
+    border-bottom: 1px solid #e8f0fe !important;
+    box-shadow: 0 1px 8px rgba(0,118,214,0.07) !important;
 }
 
-.fi-main, .fi-body { background: #f4f8ff !important; }
+/* ============================================
+   MAIN CONTENT AREA
+   ============================================ */
+.fi-main, .fi-body {
+    background: #f0f4f8 !important;
+}
 
+/* ============================================
+   PAGE HEADER
+   ============================================ */
 .fi-header-heading {
-    font-weight: 700 !important;
-    color: #0076D6 !important;
-    text-align: center !important;
-    width: 100% !important;
-    display: block !important;
-    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: #0055aa !important;
+    font-size: 22px !important;
+    letter-spacing: -0.02em !important;
 }
 
-.fi-header, .fi-page-header, .fi-page-header .fi-header-heading-group {
-    text-align: center !important;
-    align-items: center !important;
-    justify-content: center !important;
+/* ============================================
+   BUTTONS
+   ============================================ */
+.fi-btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    transition: all 0.18s ease !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
 }
-
-/* -- Buttons -- */
-.fi-btn { border-radius: 8px !important; font-weight: 600 !important; font-size: 13px !important; }
 
 .fi-btn-color-primary, .fi-btn[class*="primary"] {
-    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+    background: linear-gradient(135deg, #0076D6, #0055aa) !important;
+    border-color: #0055aa !important;
+    color: #ffffff !important;
 }
-.fi-btn-color-primary:hover { background: #00a84e !important; }
+.fi-btn-color-primary:hover {
+    background: linear-gradient(135deg, #0055aa, #003d7a) !important;
+    box-shadow: 0 4px 12px rgba(0,85,170,0.3) !important;
+}
 
 .fi-btn-color-success, .fi-btn[class*="success"] {
-    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+    background: linear-gradient(135deg, #00CB5E, #00a84e) !important;
+    border-color: #00a84e !important;
+    color: #ffffff !important;
 }
-.fi-btn-color-success:hover { background: #00a84e !important; }
-
-.fi-btn-color-info, .fi-btn[class*="info"] {
-    background: #00CB5E !important; border-color: #00CB5E !important; color: #ffffff !important;
+.fi-btn-color-success:hover {
+    box-shadow: 0 4px 12px rgba(0,168,78,0.3) !important;
 }
 
 .fi-btn-color-danger, .fi-btn[class*="danger"] {
-    background: #e53e3e !important; border-color: #e53e3e !important; color: #ffffff !important;
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border-color: #dc2626 !important;
+    color: #ffffff !important;
 }
 
 .fi-btn-color-warning, .fi-btn[class*="warning"] {
-    background: #f59e0b !important; border-color: #f59e0b !important; color: #ffffff !important;
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    border-color: #d97706 !important;
+    color: #ffffff !important;
 }
 
-/* -- Table -- */
-.fi-ta-table { border-radius: 12px !important; overflow: hidden !important; border: 1px solid #d1fae5 !important; }
+.fi-btn-color-info, .fi-btn[class*="info"] {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.fi-btn-color-gray, .fi-btn[class*="gray"] {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.fi-ta-table {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}
 
 .fi-ta-header-cell {
-    background: #00CB5E !important; color: #ffffff !important;
-    font-size: 12px !important; font-weight: 700 !important;
-    text-transform: uppercase !important; letter-spacing: 0.06em !important; padding: 14px 16px !important;
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    padding: 14px 16px !important;
+    border-bottom: 2px solid #e2e8f0 !important;
 }
-.fi-ta-header-cell * { color: #ffffff !important; }
-.fi-ta-header-cell svg { color: rgba(255,255,255,0.8) !important; }
+.fi-ta-header-cell * { color: #475569 !important; }
 
-.fi-ta-row:nth-child(even) td { background: #f0fff8 !important; }
+.fi-ta-row:nth-child(even) td { background: #f8fafc !important; }
 .fi-ta-row:nth-child(odd) td { background: #ffffff !important; }
-.fi-ta-row:hover td { background: #dcfce7 !important; }
-.fi-ta-row td { border-bottom: 1px solid #d1fae5 !important; color: #1e293b !important; font-size: 13.5px !important; }
-
-.fi-badge-color-success { background: #d1fae5 !important; color: #065f46 !important; }
-.fi-badge-color-warning { background: #fef3c7 !important; color: #92400e !important; }
-.fi-badge-color-danger  { background: #fee2e2 !important; color: #991b1b !important; }
-.fi-badge-color-info    { background: #dbeafe !important; color: #1e40af !important; }
-
-.fi-section, .fi-card {
-    border-radius: 12px !important; border: 1px solid #d1fae5 !important;
-    box-shadow: 0 1px 4px rgba(0,203,94,0.08) !important;
+.fi-ta-row:hover td {
+    background: #eff6ff !important;
+    transition: background 0.15s ease !important;
 }
-.fi-section-header-heading { color: #0076D6 !important; font-weight: 700 !important; }
+.fi-ta-row td {
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #1e293b !important;
+    font-size: 13.5px !important;
+    padding: 13px 16px !important;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+.fi-badge {
+    font-weight: 600 !important;
+    font-size: 11px !important;
+    padding: 3px 10px !important;
+    border-radius: 20px !important;
+    letter-spacing: 0.02em !important;
+}
+.fi-badge-color-success { background: #dcfce7 !important; color: #15803d !important; }
+.fi-badge-color-warning { background: #fef3c7 !important; color: #b45309 !important; }
+.fi-badge-color-danger  { background: #fee2e2 !important; color: #b91c1c !important; }
+.fi-badge-color-info    { background: #dbeafe !important; color: #1d4ed8 !important; }
+.fi-badge-color-gray    { background: #f1f5f9 !important; color: #475569 !important; }
+
+/* ============================================
+   CARDS & SECTIONS
+   ============================================ */
+.fi-section, .fi-card {
+    border-radius: 14px !important;
+    border: 1px solid #e8f0fe !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+    background: #ffffff !important;
+}
+
+.fi-section-header {
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 18px 24px !important;
+}
+
+.fi-section-header-heading {
+    color: #0055aa !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+}
+
+.fi-section-content {
+    padding: 20px 24px !important;
+}
+
+/* ============================================
+   FORM INPUTS
+   ============================================ */
+.fi-input,
+.fi-input-wrapper input,
+.fi-input-wrapper textarea,
+.fi-input-wrapper select {
+    border-radius: 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    font-size: 13.5px !important;
+    transition: border-color 0.18s, box-shadow 0.18s !important;
+}
+
+.fi-input:focus,
+.fi-input-wrapper input:focus,
+.fi-input-wrapper textarea:focus {
+    border-color: #0076D6 !important;
+    box-shadow: 0 0 0 3px rgba(0,118,214,0.12) !important;
+    outline: none !important;
+}
+
+.fi-fo-field-wrp-label label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.fi-pagination-item-btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    transition: all 0.15s !important;
+}
 
 .fi-pagination-item-btn[aria-current="page"] {
-    background: #00CB5E !important; color: #ffffff !important; border-color: #00CB5E !important;
+    background: linear-gradient(135deg, #0076D6, #0055aa) !important;
+    color: #ffffff !important;
+    border-color: #0055aa !important;
+    box-shadow: 0 2px 6px rgba(0,85,170,0.25) !important;
 }
+
 .fi-pagination-item-btn:hover {
-    background: #dcfce7 !important; border-color: #00CB5E !important; color: #00CB5E !important;
+    background: #eff6ff !important;
+    border-color: #0076D6 !important;
+    color: #0076D6 !important;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.fi-modal-window {
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.fi-modal-header {
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 20px 24px !important;
+}
+
+.fi-modal-heading {
+    font-weight: 700 !important;
+    color: #0055aa !important;
+    font-size: 17px !important;
+}
+
+/* ============================================
+   NOTIFICATIONS / ALERTS
+   ============================================ */
+.fi-no-notification {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+
+/* ============================================
+   TABS
+   ============================================ */
+.fi-tabs-tab {
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    border-radius: 8px 8px 0 0 !important;
+    transition: all 0.15s !important;
+}
+
+.fi-tabs-tab[aria-selected="true"] {
+    color: #0076D6 !important;
+    border-bottom-color: #0076D6 !important;
+}
+
+/* ============================================
+   DROPDOWN MENUS
+   ============================================ */
+.fi-dropdown-panel {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.fi-dropdown-list-item-button {
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    transition: background 0.15s !important;
+}
+
+/* ============================================
+   STATS WIDGET WRAPPER
+   ============================================ */
+.fi-wi-stats-overview-stat {
+    border-radius: 14px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+    border: 1px solid #e8f0fe !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.fi-wi-stats-overview-stat:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.09) !important;
+}
+
+/* ============================================
+   FULL-WIDTH CONTENT AREA
+   ============================================ */
+
+/* Remove max-width constraints from the main layout */
+.fi-main-ctn {
+    max-width: none !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* The inner content wrapper */
+.fi-main {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+/* Page content container */
+.fi-page {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+/* Remove side padding from the page header and body */
+.fi-simple-page,
+.fi-page-header,
+.fi-page-content {
+    max-width: none !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+
+/* Widget/section containers inside the page */
+.fi-wi,
+.fi-widgets-container {
+    max-width: none !important;
+    width: 100% !important;
+}
+
+/* ============================================
+   COMPACT TABLE — V5 TAILWIND OVERRIDE
+   ============================================ */
+
+.fi-ta-cell,
+.fi-ta-cell > *,
+td.fi-ta-cell {
+    padding: 6px 12px !important;
+    font-size: 12.5px !important;
+    line-height: 1.4 !important;
+}
+
+.fi-ta-header-cell,
+th.fi-ta-header-cell {
+    padding: 7px 12px !important;
+    font-size: 10px !important;
+    line-height: 1.4 !important;
+}
+
+.fi-ta-row,
+tr.fi-ta-row,
+tr.fi-ta-row-not-reorderable {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* Target Tailwind padding utilities directly */
+[class*="px-"][class*="fi-ta"],
+[class*="py-"][class*="fi-ta"],
+[class*="p-"][class*="fi-ta"] {
+    padding: 6px 12px !important;
+}
+
+.fi-ta-selection-cell,
+td.fi-ta-selection-cell {
+    padding: 6px 10px !important;
+    width: 36px !important;
+}
+
+.fi-ta-header-ctn {
+    padding: 8px 12px !important;
+}
+
+/* Badges */
+.fi-badge {
+    padding: 1px 7px !important;
+    font-size: 10px !important;
+    line-height: 1.5 !important;
+}
+
+/* Buttons */
+.fi-btn {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    font-size: 11.5px !important;
+    min-height: unset !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+
+/* FIX: Double checkbox — hide only the duplicate native input,
+   keep Filament's custom SVG checkbox visible */
+.fi-ta-selection-cell input[type="checkbox"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    pointer-events: none !important;
+}
+
+
+/* FIX: Double checkbox in selection cells */
+.fi-ta-selection-cell input[type="checkbox"] {
+    display: none !important;
 }

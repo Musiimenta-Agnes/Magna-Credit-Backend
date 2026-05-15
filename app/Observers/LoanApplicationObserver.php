@@ -11,6 +11,9 @@ class LoanApplicationObserver
     {
         if (!$loan->isDirty('status')) return;
 
+        // Skip notification for walk-in customers with no linked user account
+        if (!$loan->user_id) return;
+
         $status = $loan->status;
 
         $map = [
@@ -23,8 +26,7 @@ class LoanApplicationObserver
 
         if (!isset($map[$status])) return;
 
-        $title = $map[$status][0];
-        $body  = $map[$status][1];
+        [$title, $body] = $map[$status];
 
         UserNotification::create([
             'user_id'      => $loan->user_id,

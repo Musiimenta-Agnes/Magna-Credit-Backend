@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Finance')->collapsible(false),
                 NavigationGroup::make('System')->collapsible(false),
             ])
-            ->renderHook('panels::head.end', fn () => '<link rel="stylesheet" href="' . asset('css/filament/admin/theme.css') . '">')
+            ->renderHook('panels::body.end', fn () => '<link rel="stylesheet" href="' . asset('css/filament/admin/theme.css') . '">')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([Dashboard::class])

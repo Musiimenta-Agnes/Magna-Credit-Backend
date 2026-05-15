@@ -9,11 +9,19 @@ class Dashboard extends BaseDashboard
 {
     public function getTitle(): string|Htmlable
     {
-        if (auth()->user()?->hasRole('super_admin')) {
-            return 'Welcome to the dashboard, Super Admin!';
+        $user = auth()->user();
+
+        if ($user?->hasRole('super_admin')) {
+            return 'Welcome back, Super Admin!';
         }
-        return 'Welcome to the dashboard, Loans Officer!';
+
+        if ($user?->hasRole('admin')) {
+            return 'Welcome back, ' . $user->name . '!';
+        }
+
+        return 'Welcome back, ' . ($user?->name ?? 'Loans Officer') . '!';
     }
+
     public function getWidgets(): array
     {
         return [

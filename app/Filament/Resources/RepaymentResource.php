@@ -29,7 +29,7 @@ class RepaymentResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function canCreate(): bool
@@ -49,7 +49,7 @@ class RepaymentResource extends Resource
 
     public static function canView($record): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function form(Schema $schema): Schema
@@ -82,13 +82,19 @@ class RepaymentResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
+
         return $table
             ->defaultSort('created_at', 'desc')
+            ->recordUrl(fn ($record) => $isAdmin()
+                ? static::getUrl('edit', ['record' => $record])
+                : static::getUrl('view', ['record' => $record])
+            )
             ->columns([
                 TextColumn::make('loanApplication.name')->label('Client')->searchable()->sortable(),
                 TextColumn::make('amount')->money('UGX')->sortable(),
                 TextColumn::make('payment_method')->badge()
-                    ->formatStateUsing(fn ($state) => match($state) {
+                    ->formatStateUsing(fn ($state) => match ($state) {
                         'cash'          => 'Cash',
                         'mobile_money'  => 'Mobile Money',
                         'bank_transfer' => 'Bank Transfer',
@@ -100,8 +106,10 @@ class RepaymentResource extends Resource
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->actions([
-                EditAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
-                DeleteAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                EditAction::make()
+                    ->visible(fn () => $isAdmin()),
+                DeleteAction::make()
+                    ->visible(fn () => $isAdmin()),
             ]);
     }
 
