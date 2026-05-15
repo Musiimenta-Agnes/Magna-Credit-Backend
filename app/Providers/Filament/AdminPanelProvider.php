@@ -59,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Loan Management')->collapsible(false),
                 NavigationGroup::make('Finance')->collapsible(false),
+                NavigationGroup::make('System')->collapsible(false),
             ])
             ->renderHook('panels::head.end', fn () => '<link rel="stylesheet" href="' . asset('css/filament/admin/theme.css') . '">')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

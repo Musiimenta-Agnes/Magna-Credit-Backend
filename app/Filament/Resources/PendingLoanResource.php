@@ -27,6 +27,31 @@ class PendingLoanResource extends Resource
     public static function getNavigationGroup(): string { return 'Loan Management'; }
     public static function getNavigationSort(): int { return 1; }
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
+    public static function canView($record): bool
+    {
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('status', 'pending');
@@ -42,16 +67,11 @@ class PendingLoanResource extends Resource
         return 'warning';
     }
 
-    public static function form(Schema $schema): Schema
-    {
-        return app(LoanApplicationResource::class)::form($schema);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->recordUrl(fn ($record) => auth()->user()?->hasRole('super_admin') ? static::getUrl('edit', ['record' => $record]) : static::getUrl('view', ['record' => $record]))
+            ->recordUrl(fn ($record) => auth()->user()?->hasAnyRole(['super_admin', 'admin']) ? static::getUrl('edit', ['record' => $record]) : static::getUrl('view', ['record' => $record]))
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('contact')->searchable(),
@@ -65,7 +85,7 @@ class PendingLoanResource extends Resource
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
+                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']))
                     ->action(fn ($record) => $record->update(['status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation()
                     ->modalHeading('Approve Loan')
@@ -74,17 +94,17 @@ class PendingLoanResource extends Resource
                     ->label('Reject')
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
+                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']))
                     ->form([Textarea::make('rejection_reason')->required()->label('Reason for Rejection')])
                     ->action(fn ($record, array $data) => $record->update(['status' => 'rejected', 'rejection_reason' => $data['rejection_reason'], 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation(),
                 EditAction::make()
-                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
                 DeleteAction::make()
-                    ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
             ]);
     }
 
