@@ -94,7 +94,7 @@ class AdminUserResource extends Resource
 
                     TextInput::make('password')
                         ->label('Password')
-                        ->password()
+                        ->password()->revealable()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (string $context) => $context === 'create')

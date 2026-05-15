@@ -35,9 +35,10 @@ class LoanApplicationResource extends Resource
     public static function getNavigationGroup(): string { return 'Loan Management'; }
     public static function getNavigationSort(): int { return 0; }
 
+    // ── loans_officer can ACCESS (see sidebar) but cannot do anything else ──
     public static function canAccess(): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function canCreate(): bool
@@ -57,7 +58,7 @@ class LoanApplicationResource extends Resource
 
     public static function canView($record): bool
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'admin']) ?? false;
+        return Auth::user()?->hasAnyRole(['super_admin', 'admin', 'loans_officer']) ?? false;
     }
 
     public static function getNavigationBadge(): ?string
@@ -85,7 +86,7 @@ class LoanApplicationResource extends Resource
                         ->searchable()
                         ->nullable()
                         ->placeholder('Leave blank for walk-in / new customer')
-                        ->helperText('Only select if this person already has an account in the system. Leave blank for new walk-in customers.'),
+                        ->helperText('Only select if this person already has an account in the system.'),
                 ]),
 
             Section::make('Personal Details')
@@ -184,9 +185,15 @@ class LoanApplicationResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
+
         return $table
             ->defaultSort('created_at', 'desc')
-            ->recordUrl(fn ($record) => auth()->user()?->hasAnyRole(['super_admin', 'admin']) ? static::getUrl('edit', ['record' => $record]) : static::getUrl('view', ['record' => $record]))
+            // loans_officer clicks row → view page; admin/super_admin → edit page
+            ->recordUrl(fn ($record) => $isAdmin()
+                ? static::getUrl('edit', ['record' => $record])
+                : static::getUrl('view', ['record' => $record])
+            )
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('contact')->searchable(),
@@ -209,7 +216,7 @@ class LoanApplicationResource extends Resource
                     ->label('Approve')
                     ->color('success')
                     ->icon('heroicon-o-check-circle')
-                    ->visible(fn ($record) => Auth::user()?->hasAnyRole(['super_admin', 'admin']) && $record->status === 'pending')
+                    ->visible(fn ($record) => $isAdmin() && $record->status === 'pending')
                     ->action(fn ($record) => $record->update([
                         'status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()
                     ]))
@@ -221,7 +228,7 @@ class LoanApplicationResource extends Resource
                     ->label('Reject')
                     ->color('danger')
                     ->icon('heroicon-o-x-circle')
-                    ->visible(fn ($record) => Auth::user()?->hasAnyRole(['super_admin', 'admin']) && $record->status === 'pending')
+                    ->visible(fn ($record) => $isAdmin() && $record->status === 'pending')
                     ->form([Textarea::make('rejection_reason')->required()->label('Reason for Rejection')])
                     ->action(fn ($record, array $data) => $record->update([
                         'status' => 'rejected', 'rejection_reason' => $data['rejection_reason'],
@@ -233,7 +240,7 @@ class LoanApplicationResource extends Resource
                     ->label('Disburse')
                     ->color('info')
                     ->icon('heroicon-o-banknotes')
-                    ->visible(fn ($record) => Auth::user()?->hasAnyRole(['super_admin', 'admin']) && $record->status === 'approved')
+                    ->visible(fn ($record) => $isAdmin() && $record->status === 'approved')
                     ->form([
                         DatePicker::make('disbursement_date')->required()->default(now())->label('Disbursement Date'),
                         DatePicker::make('due_date')->required()->label('Due Date'),
@@ -248,13 +255,13 @@ class LoanApplicationResource extends Resource
                     ->modalDescription('Confirm disbursement details before proceeding.'),
 
                 EditAction::make()
-                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                    ->visible(fn () => $isAdmin()),
 
                 DeleteAction::make()
-                    ->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                    ->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin'])),
+                DeleteBulkAction::make()->visible(fn () => $isAdmin()),
             ]);
     }
 

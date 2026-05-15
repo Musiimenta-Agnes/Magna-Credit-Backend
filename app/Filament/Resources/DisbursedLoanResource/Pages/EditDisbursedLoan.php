@@ -5,13 +5,22 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Actions\DeleteAction;
 class EditDisbursedLoan extends EditRecord
 {
+    protected static string $resource = DisbursedLoanResource::class;
+
     public function mount(int|string $record): void
     {
-        if (!auth()->user()?->hasRole('super_admin')) {
+        if (!auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
             $this->redirect($this->getResource()::getUrl('index'));
+            return;
         }
         parent::mount($record);
     }
-    protected static string $resource = DisbursedLoanResource::class;
-    protected function getHeaderActions(): array { return [DeleteAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make()
+                ->visible(fn () => auth()->user()?->hasAnyRole(['super_admin', 'admin'])),
+        ];
+    }
 }
