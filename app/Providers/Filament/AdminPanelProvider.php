@@ -25,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('portal')
             ->login()
+            ->passwordReset()
             ->colors([
                 'primary' => [
                     50  => '240 249 255',

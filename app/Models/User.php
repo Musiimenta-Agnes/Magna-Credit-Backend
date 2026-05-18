@@ -69,6 +69,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(LoanApplication::class);
     }
 
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
+
     public function repayments()
     {
         return $this->hasMany(Repayment::class);

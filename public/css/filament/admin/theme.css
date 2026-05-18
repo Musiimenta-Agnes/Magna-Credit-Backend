@@ -208,7 +208,11 @@ nav .fi-sidebar-item a {
     padding: 14px 16px !important;
     border-bottom: 2px solid #e2e8f0 !important;
 }
-.fi-ta-header-cell * { color: #475569 !important; }
+
+/* Only color text elements in header, NOT checkboxes */
+.fi-ta-header-cell span,
+.fi-ta-header-cell button,
+.fi-ta-header-cell a { color: #475569 !important; }
 
 .fi-ta-row:nth-child(even) td { background: #f8fafc !important; }
 .fi-ta-row:nth-child(odd) td { background: #ffffff !important; }
@@ -391,8 +395,6 @@ nav .fi-sidebar-item a {
 /* ============================================
    FULL-WIDTH CONTENT AREA
    ============================================ */
-
-/* Remove max-width constraints from the main layout */
 .fi-main-ctn {
     max-width: none !important;
     width: 100% !important;
@@ -400,19 +402,16 @@ nav .fi-sidebar-item a {
     padding-right: 0 !important;
 }
 
-/* The inner content wrapper */
 .fi-main {
     max-width: none !important;
     width: 100% !important;
 }
 
-/* Page content container */
 .fi-page {
     max-width: none !important;
     width: 100% !important;
 }
 
-/* Remove side padding from the page header and body */
 .fi-simple-page,
 .fi-page-header,
 .fi-page-content {
@@ -421,7 +420,6 @@ nav .fi-sidebar-item a {
     padding-right: 24px !important;
 }
 
-/* Widget/section containers inside the page */
 .fi-wi,
 .fi-widgets-container {
     max-width: none !important;
@@ -432,16 +430,15 @@ nav .fi-sidebar-item a {
    COMPACT TABLE — V5 TAILWIND OVERRIDE
    ============================================ */
 
-.fi-ta-cell,
-.fi-ta-cell > *,
-td.fi-ta-cell {
+/* Only target data cells, NOT the selection/checkbox column */
+td.fi-ta-cell:not(.fi-ta-selection-cell),
+td.fi-ta-cell:not(.fi-ta-selection-cell) > * {
     padding: 6px 12px !important;
     font-size: 12.5px !important;
     line-height: 1.4 !important;
 }
 
-.fi-ta-header-cell,
-th.fi-ta-header-cell {
+th.fi-ta-header-cell:not(.fi-ta-selection-cell) {
     padding: 7px 12px !important;
     font-size: 10px !important;
     line-height: 1.4 !important;
@@ -452,19 +449,6 @@ tr.fi-ta-row,
 tr.fi-ta-row-not-reorderable {
     height: auto !important;
     min-height: 0 !important;
-}
-
-/* Target Tailwind padding utilities directly */
-[class*="px-"][class*="fi-ta"],
-[class*="py-"][class*="fi-ta"],
-[class*="p-"][class*="fi-ta"] {
-    padding: 6px 12px !important;
-}
-
-.fi-ta-selection-cell,
-td.fi-ta-selection-cell {
-    padding: 6px 10px !important;
-    width: 36px !important;
 }
 
 .fi-ta-header-ctn {
@@ -490,18 +474,45 @@ td.fi-ta-selection-cell {
     line-height: 1.5 !important;
 }
 
-/* FIX: Double checkbox — hide only the duplicate native input,
-   keep Filament's custom SVG checkbox visible */
+/* ============================================
+   CHECKBOXES — fully restored and visible
+   ============================================ */
+
+/* Selection column sizing */
+.fi-ta-selection-cell,
+td.fi-ta-selection-cell,
+th.fi-ta-selection-cell {
+    padding: 6px 10px !important;
+    width: 36px !important;
+}
+
+/* Make the checkbox wrapper and all its children visible */
+.fi-ta-selection-cell .fi-checkbox,
+.fi-ta-selection-cell [class*="checkbox"],
+.fi-ta-selection-cell > div,
+.fi-ta-selection-cell > label {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* The SVG custom checkbox Filament renders — force it visible and blue */
+.fi-ta-selection-cell svg {
+    display: block !important;
+    width: 16px !important;
+    height: 16px !important;
+    color: #0055aa !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* The native input — keep accessible but invisible behind SVG */
 .fi-ta-selection-cell input[type="checkbox"] {
     position: absolute !important;
     opacity: 0 !important;
-    width: 0 !important;
-    height: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
     pointer-events: none !important;
-}
-
-
-/* FIX: Double checkbox in selection cells */
-.fi-ta-selection-cell input[type="checkbox"] {
-    display: none !important;
 }

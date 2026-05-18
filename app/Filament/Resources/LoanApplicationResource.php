@@ -18,6 +18,7 @@ use Filament\Schemas\Schema;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -188,6 +189,7 @@ class LoanApplicationResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->selectable()
             ->defaultSort('created_at', 'desc')
             // loans_officer clicks row → view page; admin/super_admin → edit page
             ->recordUrl(fn ($record) => $isAdmin()
@@ -261,7 +263,9 @@ class LoanApplicationResource extends Resource
                     ->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => $isAdmin()),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
@@ -280,3 +284,8 @@ class LoanApplicationResource extends Resource
         ];
     }
 }
+
+
+
+
+
