@@ -1,6 +1,7 @@
 <?php
 namespace App\Filament\Resources\RejectedLoanResource\Pages;
 use App\Filament\Resources\RejectedLoanResource;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 class CreateRejectedLoan extends CreateRecord
 {

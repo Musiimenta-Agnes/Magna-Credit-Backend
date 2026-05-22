@@ -1,12 +1,12 @@
 <?php
 namespace App\Filament\Resources\DisbursedLoanResource\Pages;
 use App\Filament\Resources\DisbursedLoanResource;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Actions\DeleteAction;
 class EditDisbursedLoan extends EditRecord
 {
     protected static string $resource = DisbursedLoanResource::class;
-
     public function mount(int|string $record): void
     {
         if (!auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
@@ -15,12 +15,18 @@ class EditDisbursedLoan extends EditRecord
         }
         parent::mount($record);
     }
-
     protected function getHeaderActions(): array
     {
         return [
             DeleteAction::make()
-                ->visible(fn () => auth()->user()?->hasAnyRole(['super_admin', 'admin'])),
+                ->visible(fn () => auth()->user()?->hasAnyRole(['super_admin', 'admin']))
+                ->successNotificationTitle('Disbursed loan deleted successfully'),
         ];
+    }
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Disbursed loan updated successfully');
     }
 }

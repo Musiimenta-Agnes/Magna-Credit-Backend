@@ -2,6 +2,16 @@
 namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
-class CreateUser extends CreateRecord {
+use Filament\Notifications\Notification;
+
+class CreateUser extends CreateRecord
+{
     protected static string $resource = UserResource::class;
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('User created successfully');
+    }
 }

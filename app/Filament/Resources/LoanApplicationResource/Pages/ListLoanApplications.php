@@ -3,6 +3,7 @@ namespace App\Filament\Resources\LoanApplicationResource\Pages;
 use App\Filament\Resources\LoanApplicationResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\CreateAction;
+use Filament\Notifications\Notification;
 
 class ListLoanApplications extends ListRecords
 {
@@ -11,7 +12,9 @@ class ListLoanApplications extends ListRecords
     protected function getHeaderActions(): array
     {
         return auth()->user()?->hasRole('super_admin') ? [
-            CreateAction::make()->label('New Application'),
+            CreateAction::make()
+                ->label('New Application')
+                ->successNotificationTitle('Loan application created successfully'),
         ] : [];
     }
 }

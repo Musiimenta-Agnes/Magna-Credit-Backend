@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
 use Filament\Forms\Components\DatePicker;
@@ -18,6 +17,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class LoanApplicationsRelationManager extends RelationManager
@@ -66,21 +66,26 @@ class LoanApplicationsRelationManager extends RelationManager
                     Grid::make(2)->schema([
                         Select::make('loan_type')->label('Loan Type')->required()
                             ->options([
-                                'Logbook Loan'    => 'Logbook Loan',
-                                'Business Loan'   => 'Business Loan',
-                                'Personal Loan'   => 'Personal Loan',
+                                'Logbook Loan'         => 'Logbook Loan',
+                                'Business Loan'        => 'Business Loan',
+                                'Personal Loan'        => 'Personal Loan',
                                 'Asset Financing Loan' => 'Asset Financing Loan',
-                                'Salary Loan'        => 'Salary Loan',
+                                'Salary Loan'          => 'Salary Loan',
                             ])->native(false),
                         TextInput::make('loan_amount')->label('Loan Amount (UGX)')->required()->numeric()->minValue(0),
                         TextInput::make('monthly_income')->label('Monthly Income (UGX)')->required()->numeric()->minValue(0),
                         Select::make('occupation')->label('Occupation')->required()
                             ->options([
-                                'Farmer' => 'Farmer', 'Business Owner' => 'Business Owner',
-                                'Teacher' => 'Teacher', 'Engineer' => 'Engineer',
-                                'Driver' => 'Driver', 'Student' => 'Student',
-                                'Civil Servant' => 'Civil Servant', 'Medical Worker' => 'Medical Worker',
-                                'Technician' => 'Technician', 'Other' => 'Other',
+                                'Farmer'         => 'Farmer',
+                                'Business Owner' => 'Business Owner',
+                                'Teacher'        => 'Teacher',
+                                'Engineer'       => 'Engineer',
+                                'Driver'         => 'Driver',
+                                'Student'        => 'Student',
+                                'Civil Servant'  => 'Civil Servant',
+                                'Medical Worker' => 'Medical Worker',
+                                'Technician'     => 'Technician',
+                                'Other'          => 'Other',
                             ])->native(false),
                     ]),
                 ]),
@@ -136,7 +141,6 @@ class LoanApplicationsRelationManager extends RelationManager
                         'rejected'  => 'danger',
                         default     => 'gray',
                     }),
-                TextColumn::make('loan_amount')->label('Loan Amount')->money('UGX'),
                 TextColumn::make('created_at')->date()->sortable()->label('Applied On'),
             ])
             ->headerActions([
@@ -145,46 +149,78 @@ class LoanApplicationsRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = $this->getOwnerRecord()->id;
                         return $data;
-                    }),
+                    })
+                    ->successNotificationTitle('Loan application created successfully'),
             ])
             ->actions([
-                Action::make('approve')->label('Approve')->color('success')
+                Action::make('approve')
+                    ->label('Approve')->color('success')
                     ->icon('heroicon-o-check-circle')
                     ->visible(fn ($record) => $record->status === 'pending')
-                    ->action(fn ($record) => $record->update([
-                        'status' => 'approved', 'reviewed_by' => Auth::id(), 'reviewed_at' => now()
-                    ]))
+                    ->action(function ($record) {
+                        $record->update([
+                            'status'      => 'approved',
+                            'reviewed_by' => Auth::id(),
+                            'reviewed_at' => now(),
+                        ]);
+                        Notification::make()
+                            ->success()
+                            ->title('Loan application approved successfully')
+                            ->send();
+                    })
                     ->requiresConfirmation(),
 
-                Action::make('reject')->label('Reject')->color('danger')
+                Action::make('reject')
+                    ->label('Reject')->color('danger')
                     ->icon('heroicon-o-x-circle')
                     ->visible(fn ($record) => $record->status === 'pending')
                     ->form([Textarea::make('rejection_reason')->required()->label('Reason')])
-                    ->action(fn ($record, array $data) => $record->update([
-                        'status' => 'rejected', 'rejection_reason' => $data['rejection_reason'],
-                        'reviewed_by' => Auth::id(), 'reviewed_at' => now()
-                    ]))
+                    ->action(function ($record, array $data) {
+                        $record->update([
+                            'status'           => 'rejected',
+                            'rejection_reason' => $data['rejection_reason'],
+                            'reviewed_by'      => Auth::id(),
+                            'reviewed_at'      => now(),
+                        ]);
+                        Notification::make()
+                            ->danger()
+                            ->title('Loan application rejected')
+                            ->send();
+                    })
                     ->requiresConfirmation(),
 
-                Action::make('disburse')->label('Disburse')->color('info')
+                Action::make('disburse')
+                    ->label('Disburse')->color('info')
                     ->icon('heroicon-o-banknotes')
                     ->visible(fn ($record) => $record->status === 'approved')
                     ->form([
                         DatePicker::make('disbursement_date')->required()->default(now())->label('Disbursement Date'),
                         DatePicker::make('due_date')->required()->label('Due Date'),
                     ])
-                    ->action(fn ($record, array $data) => $record->update([
-                        'status' => 'disbursed',
-                        'disbursement_date' => $data['disbursement_date'],
-                        'due_date' => $data['due_date'],
-                    ]))
+                    ->action(function ($record, array $data) {
+                        $record->update([
+                            'status'            => 'disbursed',
+                            'disbursement_date' => $data['disbursement_date'],
+                            'due_date'          => $data['due_date'],
+                        ]);
+                        Notification::make()
+                            ->info()
+                            ->title('Loan disbursed successfully')
+                            ->send();
+                    })
                     ->requiresConfirmation(),
 
-                EditAction::make(),
-                DeleteAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                EditAction::make()
+                    ->successNotificationTitle('Loan application updated successfully'),
+
+                DeleteAction::make()
+                    ->visible(fn () => Auth::user()?->hasRole('super_admin'))
+                    ->successNotificationTitle('Loan application deleted successfully'),
             ])
             ->bulkActions([
-                DeleteBulkAction::make()->visible(fn () => Auth::user()?->hasRole('super_admin')),
-            ]);
+                \Filament\Actions\BulkActionGroup::make([
+                    DeleteBulkAction::make()
+                        ->visible(fn () => Auth::user()?->hasRole('super_admin')),
+                ])]);
     }
 }

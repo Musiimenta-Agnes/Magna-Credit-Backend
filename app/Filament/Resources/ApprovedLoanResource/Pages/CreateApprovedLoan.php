@@ -1,6 +1,7 @@
 <?php
 namespace App\Filament\Resources\ApprovedLoanResource\Pages;
 use App\Filament\Resources\ApprovedLoanResource;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 class CreateApprovedLoan extends CreateRecord
 {
