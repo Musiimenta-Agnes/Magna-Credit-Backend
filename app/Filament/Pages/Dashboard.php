@@ -27,11 +27,12 @@ class Dashboard extends BaseDashboard
         return [
             \App\Filament\Widgets\LoanStatsOverview::class,
             \App\Filament\Widgets\LoanStatusPieChart::class,
+            \App\Filament\Widgets\RecentLoanApplications::class,
         ];
     }
 
     public function getColumns(): int|array
     {
-        return 1;
+        return 2;
     }
 }

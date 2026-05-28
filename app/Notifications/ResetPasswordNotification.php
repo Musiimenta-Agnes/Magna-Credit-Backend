@@ -7,8 +7,14 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class ResetPasswordNotification extends ResetPassword
 {
+    public ?string $url = null;
+
     protected function resetUrl($notifiable): string
     {
+        if ($this->url) {
+            return $this->url;
+        }
+
         return url(route('filament.admin.auth.password-reset.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
