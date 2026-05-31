@@ -23,21 +23,12 @@ jobs:
         run: composer install --optimize-autoloader --no-dev
 
       - name: 🗜️ Bundle Application into release.zip
-        run: |
-          zip -r release.zip . -x "*.git*" "node_modules/*" "tests/*" "storage/logs/*"
-          mkdir deploy_dist
-          mv release.zip deploy_dist/
-          mkdir deploy_dist/public
-          cp public/extract.php deploy_dist/public/extract.php
+        run: zip -r release.zip . -x "*.git*" "node_modules/*" "tests/*" "storage/logs/*"
 
-      - name: 🚀 Sync files to cPanel FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: deploy_dist/
-          server-dir: /
+      - name: 🚀 Upload files via FTP
+        run: |
+          curl -T release.zip ftp://${{ secrets.FTP_SERVER }}/release.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl -T public/extract.php ftp://${{ secrets.FTP_SERVER }}/public/extract.php --ftp-create-dirs --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
       - name: 🛠️ Trigger Live Extraction and Migrations
         run: |
