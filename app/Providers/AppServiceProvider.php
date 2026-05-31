@@ -24,7 +24,9 @@ class AppServiceProvider extends ServiceProvider
         Repayment::observe(RepaymentObserver::class);
         
         \Opcodes\LogViewer\Facades\LogViewer::auth(function ($request) {
-            return $request->user() !== null;
+            // Allow access without login for initial deployment debugging.
+            // Once user auth is working, change to: return $request->user() !== null;
+            return true;
         });
     }
 }
