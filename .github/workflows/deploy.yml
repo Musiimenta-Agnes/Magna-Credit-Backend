@@ -27,8 +27,8 @@ jobs:
 
       - name: 🚀 Upload files via FTP
         run: |
-          curl -T release.zip ftp://${{ secrets.FTP_SERVER }}/release.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
-          curl -T public/extract.php ftp://${{ secrets.FTP_SERVER }}/public/extract.php --ftp-create-dirs --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ssl-reqd --insecure -T release.zip ftp://${{ secrets.FTP_SERVER }}/release.zip --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl --ssl-reqd --insecure -T public/extract.php ftp://${{ secrets.FTP_SERVER }}/public/extract.php --ftp-create-dirs --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
       - name: 🛠️ Trigger Live Extraction and Migrations
         run: |
