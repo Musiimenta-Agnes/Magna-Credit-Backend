@@ -41,9 +41,8 @@ if ($res === TRUE) {
     $zip->close();
     
     echo "Moving files out of subdirectory...<br>";
-    // Copy all files from the extracted subdirectory up one level
-    exec('cp -a ' . $extractDir . '/* ' . __DIR__ . '/../');
-    exec('cp -a ' . $extractDir . '/.[a-zA-Z0-9]* ' . __DIR__ . '/../ 2>/dev/null'); // Copy hidden files
+    // Copy all files and hidden files, merging directories correctly
+    exec('cp -a ' . $extractDir . '/. ' . __DIR__ . '/../');
     exec('rm -rf ' . $extractDir);
     
     unlink($zipFile);
