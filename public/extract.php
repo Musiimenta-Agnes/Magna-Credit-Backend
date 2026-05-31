@@ -150,6 +150,9 @@ try {
     logStep("   ↳ Caches cleared.");
 
     // Run database migrations
+    // Explicitly delete the redundant remember_token migration which might still be on the server
+    @unlink($projectRoot . 'database/migrations/2026_05_31_114050_add_remember_token_to_users_table.php');
+
     logStep("🗃️ Running migrations...");
     $kernel->call('migrate', ['--force' => true]);
     $migrationOutput = \Illuminate\Support\Facades\Artisan::output();
