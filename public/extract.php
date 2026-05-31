@@ -60,7 +60,7 @@ if ($res === TRUE) {
     file_put_contents(__DIR__ . '/../composer.phar', $composerData);
     
     // Run composer install using the downloaded composer.phar
-    exec('cd ' . __DIR__ . '/../ && php composer.phar install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
+    exec('cd ' . __DIR__ . '/../ && export COMPOSER_HOME=' . __DIR__ . '/../ && php composer.phar install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
     echo "<pre>" . implode("\n", $output) . "</pre>";
     
     if ($return_var !== 0) {
