@@ -22,5 +22,9 @@ class AppServiceProvider extends ServiceProvider
     {
         LoanApplication::observe(LoanApplicationObserver::class);
         Repayment::observe(RepaymentObserver::class);
+        
+        \Opcodes\LogViewer\Facades\LogViewer::auth(function ($request) {
+            return $request->user() !== null;
+        });
     }
 }

@@ -53,7 +53,11 @@ if ($res === TRUE) {
     $return_var = 0;
     
     // Download composer locally
-    exec('cd ' . __DIR__ . '/../ && curl -sS https://getcomposer.org/installer | php', $dl_out, $dl_ret);
+    $composerData = file_get_contents('https://getcomposer.org/download/latest-stable/composer.phar');
+    if ($composerData === false) {
+        die("Failed to download composer.phar");
+    }
+    file_put_contents(__DIR__ . '/../composer.phar', $composerData);
     
     // Run composer install using the downloaded composer.phar
     exec('cd ' . __DIR__ . '/../ && php composer.phar install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
