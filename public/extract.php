@@ -49,19 +49,31 @@ if ($res === TRUE) {
     unlink($zipFile);
     
     echo "Running Composer Install...<br>";
-    // Run composer install to ensure livewire/flux gets installed correctly
-    exec('cd ' . __DIR__ . '/../ && composer install --optimize-autoloader --no-dev --no-interaction');
+    $output = [];
+    $return_var = 0;
+    // Run composer install and capture output
+    exec('cd ' . __DIR__ . '/../ && composer install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
+    echo "<pre>" . implode("\n", $output) . "</pre>";
+    
+    if ($return_var !== 0) {
+        die("Composer install failed! Cannot continue.");
+    }
 
     echo "Running Laravel Migrations...<br>";
-    require __DIR__ . '/../vendor/autoload.php';
-    $app = require_once __DIR__ . '/../bootstrap/app.php';
-    $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-    
-    $kernel->call('optimize:clear');
-    $kernel->call('migrate', ['--force' => true]);
-    
-    echo "Deployment Complete!<br>";
-    echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    try {
+        require __DIR__ . '/../vendor/autoload.php';
+        $app = require_once __DIR__ . '/../bootstrap/app.php';
+        $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+        
+        $kernel->call('optimize:clear');
+        $kernel->call('migrate', ['--force' => true]);
+        
+        echo "Deployment Complete!<br>";
+        echo "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    } catch (\Throwable $e) {
+        echo "Fatal Error: " . $e->getMessage() . "<br>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    }
 } else {
     http_response_code(500);
     echo json_encode(['error' => 'Failed to open zip file']);
