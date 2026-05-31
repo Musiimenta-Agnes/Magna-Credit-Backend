@@ -158,6 +158,13 @@ try {
     $migrationOutput = \Illuminate\Support\Facades\Artisan::output();
     logStep("<pre>" . htmlspecialchars($migrationOutput) . "</pre>");
 
+    if (isset($_GET['seed']) && $_GET['seed'] === '1') {
+        logStep("🌱 Running database seeders...");
+        $kernel->call('db:seed', ['--force' => true]);
+        $seedOutput = \Illuminate\Support\Facades\Artisan::output();
+        logStep("<pre>" . htmlspecialchars($seedOutput) . "</pre>");
+    }
+
     // Rebuild optimized caches for production
     $kernel->call('config:cache');
     $kernel->call('route:cache');
