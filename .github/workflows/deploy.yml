@@ -16,7 +16,7 @@ jobs:
 
       - name: 🚀 Upload extract.php via FTP
         run: |
-          curl -sS --ssl-reqd --insecure --disable-epsv --ftp-pasv -T public/extract.php ftp://${{ secrets.FTP_SERVER }}/extract.php --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
+          curl -sS --ssl-reqd --insecure --disable-epsv --ftp-pasv -T public/extract.php ftp://${{ secrets.FTP_SERVER }}/public/extract.php --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
       - name: 🛠️ Trigger Live Extraction and Migrations
         run: |
