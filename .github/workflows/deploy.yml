@@ -22,6 +22,9 @@ jobs:
       - name: 📦 Install Composer Dependencies
         run: composer install --optimize-autoloader --no-dev
 
+      - name: 🗜️ Bundle Application into release.zip
+        run: zip -r release.zip . -x "*.git*" "node_modules/*" "tests/*" "storage/logs/*"
+
       - name: 🚀 Sync files to cPanel FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -29,9 +32,11 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /
+          exclude: |
+            **
+            !release.zip
+            !public/extract.php
 
-      - name: 🛠️ Trigger Live Database Migrations
+      - name: 🛠️ Trigger Live Extraction and Migrations
         run: |
-          curl -X POST https://admin.magnacredited.com/deploy \
-          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
-          -H "Accept: application/json"
+          curl -sS "https://admin.magnacredited.com/extract.php?token=${{ secrets.DEPLOY_TOKEN }}"
