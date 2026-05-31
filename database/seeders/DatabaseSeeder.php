@@ -13,11 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'test@example.com',
-            'phone' => '1234567890',
-            'password' => \Illuminate\Support\Facades\Hash::make('password'),
-        ]);
+        $user = User::updateOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Admin',
+                'phone' => '1234567890',
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            ]
+        );
+        
+        $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'super_admin']);
+        $user->assignRole($role);
     }
 }
