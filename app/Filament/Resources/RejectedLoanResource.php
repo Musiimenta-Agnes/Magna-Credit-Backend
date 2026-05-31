@@ -173,6 +173,7 @@ class RejectedLoanResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->striped()
             ->defaultSort('created_at', 'desc')
             ->recordUrl(fn ($record) => $isAdmin()
                 ? static::getUrl('edit', ['record' => $record])
@@ -187,7 +188,7 @@ class RejectedLoanResource extends Resource
                 TextColumn::make('reviewed_at')->dateTime()->sortable()->label('Rejected On'),
             ])
             ->actions([
-                EditAction::make()->visible(fn () => $isAdmin()),
+                EditAction::make()->color('success')->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => $isAdmin()),

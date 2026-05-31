@@ -27,42 +27,27 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->colors([
-                'primary' => [
-                    50  => '240 249 255',
-                    100 => '224 242 254',
-                    200 => '186 230 253',
-                    300 => '125 211 252',
-                    400 => '56 189 248',
-                    500 => '0 118 214',
-                    600 => '0 100 181',
-                    700 => '0 80 145',
-                    800 => '0 60 109',
-                    900 => '0 40 73',
-                    950 => '0 20 36',
-                ],
-                'success' => [
-                    50  => '240 255 248',
-                    100 => '220 255 237',
-                    200 => '170 255 210',
-                    300 => '100 240 170',
-                    400 => '0 220 120',
-                    500 => '0 203 94',
-                    600 => '0 170 78',
-                    700 => '0 135 62',
-                    800 => '0 100 46',
-                    900 => '0 65 30',
-                    950 => '0 35 16',
-                ],
+                'primary' => \Filament\Support\Colors\Color::Blue,
+                'success' => \Filament\Support\Colors\Color::Green,
+                'warning' => \Filament\Support\Colors\Color::Amber,
+                'danger'  => \Filament\Support\Colors\Color::Red,
+                'info'    => \Filament\Support\Colors\Color::Sky,
+                'gray'    => \Filament\Support\Colors\Color::Slate,
             ])
-            ->brandName('Magna Credit Admin')
+            ->font('Poppins')
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->brandName('Magna Credit')
             ->brandLogo(asset('images/magna_logo.jpeg'))
-            ->brandLogoHeight('40px')
+            ->favicon(asset('images/magna_logo.jpeg'))
+            ->brandLogoHeight('3rem')
+            ->darkMode(false)
+            ->maxContentWidth('full')
             ->navigationGroups([
                 NavigationGroup::make('Loan Management')->collapsible(false),
                 NavigationGroup::make('Finance')->collapsible(false),
                 NavigationGroup::make('System')->collapsible(false),
             ])
-            ->renderHook('panels::body.end', fn () => '<link rel="stylesheet" href="' . asset('css/filament/admin/theme.css') . '">')
+            ->renderHook('panels::body.end', fn () => '<link rel="stylesheet" href="' . asset('css/filament/admin/theme.css?v=' . time()) . '">')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([Dashboard::class])

@@ -71,6 +71,7 @@ class UserResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->striped()
             ->defaultSort('created_at', 'desc')
             // exclude all admin-role users from the clients list
             ->modifyQueryUsing(fn ($query) => $query->whereDoesntHave('roles', fn ($q) =>
@@ -92,8 +93,10 @@ class UserResource extends Resource
             ->filters([])
             ->actions([
                 EditAction::make()
+                    ->color('success')
                     ->visible(fn () => $isAdmin()),
                 DeleteAction::make()
+                    ->color('danger')
                     ->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([

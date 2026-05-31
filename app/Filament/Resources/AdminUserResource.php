@@ -132,6 +132,7 @@ class AdminUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(fn ($query) => $query->whereHas('roles', fn ($q) =>
                 $q->whereIn('name', ['super_admin', 'admin', 'loans_officer'])
@@ -176,9 +177,10 @@ class AdminUserResource extends Resource
             ])
             ->filters([])
             ->actions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()->color('success'),
+                EditAction::make()->color('success'),
                 DeleteAction::make()
+                    ->color('danger')
                     ->visible(fn ($record) => $record->id !== Auth::id()),
             ])
             ->bulkActions([]);

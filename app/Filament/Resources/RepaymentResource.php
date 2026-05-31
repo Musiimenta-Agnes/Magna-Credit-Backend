@@ -85,6 +85,7 @@ class RepaymentResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->striped()
             ->defaultSort('created_at', 'desc')
             ->recordUrl(fn ($record) => $isAdmin()
                 ? static::getUrl('edit', ['record' => $record])
@@ -107,8 +108,10 @@ class RepaymentResource extends Resource
             ])
             ->actions([
                 EditAction::make()
+                    ->color('success')
                     ->visible(fn () => $isAdmin()),
                 DeleteAction::make()
+                    ->color('danger')
                     ->visible(fn () => $isAdmin()),
             ]);
     }

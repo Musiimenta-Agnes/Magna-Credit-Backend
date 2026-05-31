@@ -1,0 +1,37 @@
+name: Deploy to cPanel via FTP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+        
+      - name: 🔧 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite3, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+
+      - name: 📦 Install Composer Dependencies
+        run: composer install --optimize-autoloader --no-dev
+
+      - name: 🚀 Sync files to cPanel FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: admin.magnacredited.com
+          username: deploy@admin.magnacredited.com
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /backend/
+
+      - name: 🛠️ Trigger Live Database Migrations
+        run: |
+          curl -X POST https://admin.magnacredited.com/backend/public/deploy \
+          -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
+          -H "Accept: application/json"

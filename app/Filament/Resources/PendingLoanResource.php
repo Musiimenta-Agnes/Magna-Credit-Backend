@@ -175,6 +175,7 @@ class PendingLoanResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->striped()
             ->defaultSort('created_at', 'desc')
             ->recordUrl(fn ($record) => $isAdmin()
                 ? static::getUrl('edit', ['record' => $record])
@@ -204,8 +205,8 @@ class PendingLoanResource extends Resource
                     ->action(fn ($record, array $data) => $record->update(['status' => 'rejected', 'rejection_reason' => $data['rejection_reason'], 'reviewed_by' => Auth::id(), 'reviewed_at' => now()]))
                     ->requiresConfirmation(),
 
-                EditAction::make()->visible(fn () => $isAdmin()),
-                DeleteAction::make()->visible(fn () => $isAdmin()),
+                EditAction::make()->color('success')->visible(fn () => $isAdmin()),
+                DeleteAction::make()->color('danger')->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
                 DeleteBulkAction::make()->visible(fn () => $isAdmin()),

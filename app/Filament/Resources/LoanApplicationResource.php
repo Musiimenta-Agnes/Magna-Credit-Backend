@@ -189,6 +189,7 @@ class LoanApplicationResource extends Resource
         $isAdmin = fn () => Auth::user()?->hasAnyRole(['super_admin', 'admin']);
 
         return $table
+            ->striped()
             ->selectable()
             ->defaultSort('created_at', 'desc')
             // loans_officer clicks row → view page; admin/super_admin → edit page
@@ -257,9 +258,11 @@ class LoanApplicationResource extends Resource
                     ->modalDescription('Confirm disbursement details before proceeding.'),
 
                 EditAction::make()
+                    ->color('success')
                     ->visible(fn () => $isAdmin()),
 
                 DeleteAction::make()
+                    ->color('danger')
                     ->visible(fn () => $isAdmin()),
             ])
             ->bulkActions([
