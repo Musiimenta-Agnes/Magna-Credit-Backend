@@ -110,18 +110,24 @@ if ($return_var !== 0) {
 logStep("✅ Composer install succeeded.");
 
 // ── 5. Storage directories & symlink ────────────────────────────────
-logStep("📁 Ensuring storage directories exist...");
+logStep("📁 Ensuring storage directories exist with correct permissions...");
 $storageDirs = [
     $projectRoot . 'storage/framework/cache/data',
     $projectRoot . 'storage/framework/sessions',
     $projectRoot . 'storage/framework/views',
     $projectRoot . 'storage/logs',
+    $projectRoot . 'bootstrap/cache',
 ];
 foreach ($storageDirs as $dir) {
     if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
+        mkdir($dir, 0775, true);
     }
 }
+
+// Set correct permissions for all storage and bootstrap/cache
+exec('chmod -R 0775 ' . escapeshellarg($projectRoot . 'storage') . ' 2>&1', $chmodOut);
+exec('chmod -R 0775 ' . escapeshellarg($projectRoot . 'bootstrap/cache') . ' 2>&1', $chmodOut);
+logStep("   ↳ Storage and cache permissions set to 0775.");
 
 // Create storage symlink if missing
 $storageLink = $projectRoot . 'public/storage';
