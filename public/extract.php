@@ -51,8 +51,12 @@ if ($res === TRUE) {
     echo "Running Composer Install...<br>";
     $output = [];
     $return_var = 0;
-    // Run composer install and capture output
-    exec('cd ' . __DIR__ . '/../ && composer install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
+    
+    // Download composer locally
+    exec('cd ' . __DIR__ . '/../ && curl -sS https://getcomposer.org/installer | php', $dl_out, $dl_ret);
+    
+    // Run composer install using the downloaded composer.phar
+    exec('cd ' . __DIR__ . '/../ && php composer.phar install --optimize-autoloader --no-dev --no-interaction 2>&1', $output, $return_var);
     echo "<pre>" . implode("\n", $output) . "</pre>";
     
     if ($return_var !== 0) {
