@@ -32,6 +32,6 @@ jobs:
 
       - name: 🛠️ Trigger Live Database Migrations
         run: |
-          curl -X POST https://admin.magnacredited.com/backend/public/deploy \
+          curl -X POST https://admin.magnacredited.com/deploy \
           -H "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN }}" \
           -H "Accept: application/json"
