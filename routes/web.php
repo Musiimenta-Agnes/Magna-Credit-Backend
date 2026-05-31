@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('filament.admin.auth.login');
 })->name('home');
 
 Route::post('/deploy', function (\Illuminate\Http\Request $request) {
