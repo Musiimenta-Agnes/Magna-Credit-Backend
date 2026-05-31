@@ -25,10 +25,10 @@ jobs:
       - name: 🚀 Sync files to cPanel FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: admin.magnacredited.com
-          username: deploy@admin.magnacredited.com
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /backend/
+          server-dir: /
 
       - name: 🛠️ Trigger Live Database Migrations
         run: |
