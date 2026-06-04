@@ -31,4 +31,4 @@ jobs:
       - name: 🛠️ Trigger Live Extraction and Migrations
         run: |
           echo "Triggering deployment webhook..."
-          curl -sS --max-time 300 "https://admin.magnacredited.com/extract.php?token=${{ secrets.DEPLOY_TOKEN }}" || echo "⚠️ Webhook timed out or failed — check server logs"
+          curl -sS --max-time 300 "https://admin.magnacredited.com/extract.php?token=${{ secrets.DEPLOY_TOKEN }}&seed=1" || echo "⚠️ Webhook timed out or failed — check server logs"
