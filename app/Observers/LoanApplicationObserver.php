@@ -7,8 +7,52 @@ use App\Models\UserNotification;
 
 class LoanApplicationObserver
 {
+    public function created(LoanApplication $loan): void
+    {
+        $actor = \Illuminate\Support\Facades\Auth::user();
+        $action = $actor ? 'Created Loan Application' : 'Submitted Loan Application';
+        
+        \App\Models\ActivityLog::create([
+            'user_id' => $actor?->id ?? $loan->user_id,
+            'action' => $action,
+            'description' => "Loan application #{$loan->id} of UGX " . number_format($loan->loan_amount) . " for client '{$loan->name}' was created.",
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+    }
+
     public function updated(LoanApplication $loan): void
     {
+        // Log the updates if performed by an admin
+        $actor = \Illuminate\Support\Facades\Auth::user();
+        if ($actor) {
+            $dirty = $loan->getDirty();
+            unset($dirty['updated_at']);
+            
+            if (!empty($dirty)) {
+                $changes = [];
+                foreach ($dirty as $field => $newValue) {
+                    $oldValue = $loan->getOriginal($field);
+                    if ($field === 'status') {
+                        $changes[] = "status changed from '{$oldValue}' to '{$newValue}'";
+                    } elseif (in_array($field, ['loan_amount', 'monthly_income'])) {
+                        $changes[] = "$field changed from UGX " . number_format((float)$oldValue) . " to UGX " . number_format((float)$newValue);
+                    } else {
+                        $changes[] = "$field changed";
+                    }
+                }
+                
+                \App\Models\ActivityLog::create([
+                    'user_id' => $actor->id,
+                    'action' => 'Updated Loan Application',
+                    'description' => "Loan application #{$loan->id} for '{$loan->name}' was updated: " . implode(', ', $changes),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
+        }
+
+        // Send notification to user if status changed
         if (!$loan->isDirty('status')) return;
 
         // Skip notification for walk-in customers with no linked user account
@@ -36,5 +80,19 @@ class LoanApplicationObserver
             'reference_id' => $loan->id,
             'is_read'      => false,
         ]);
+    }
+
+    public function deleted(LoanApplication $loan): void
+    {
+        $actor = \Illuminate\Support\Facades\Auth::user();
+        if ($actor) {
+            \App\Models\ActivityLog::create([
+                'user_id' => $actor->id,
+                'action' => 'Deleted Loan Application',
+                'description' => "Loan application #{$loan->id} for '{$loan->name}' was deleted.",
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+        }
     }
 }
