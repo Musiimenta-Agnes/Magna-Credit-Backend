@@ -1,5 +1,5 @@
 <?php
-// public/test-mail.php
+// public/test-mail-v2.php
 
 header('Content-Type: text/plain; charset=utf-8');
 
