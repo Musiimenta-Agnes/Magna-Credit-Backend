@@ -26,13 +26,13 @@ function testMailConfiguration($name, $configSettings) {
         config([$key => $value]);
     }
     
-    // Reset the mail manager so it rebuilds the mailer instance with new config
-    app()->forgetInstances();
+    // Reset the mail manager instance only, so it re-reads config
+    app()->forgetInstance('mail.manager');
     
     try {
         \Illuminate\Support\Facades\Mail::raw("This is a test email sent using $name configuration on the live server.", function ($message) {
             $message->to('musiimentaagnes9@gmail.com')
-                    ->subject('Magna Credit - Mail Test');
+                    ->subject('Magna Credit - Mail Test (' . $name . ')');
         });
         echo "✅ SUCCESS! Email sent without exceptions.\n\n";
         return true;
