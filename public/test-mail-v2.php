@@ -30,7 +30,7 @@ function testMailConfiguration($name, $configSettings) {
     app()->forgetInstance('mail.manager');
     
     try {
-        \Illuminate\Support\Facades\Mail::raw("This is a test email sent using $name configuration on the live server.", function ($message) {
+        \Illuminate\Support\Facades\Mail::raw("This is a test email sent using $name configuration on the live server.", function ($message) use ($name) {
             $message->to('musiimentaagnes9@gmail.com')
                     ->subject('Magna Credit - Mail Test (' . $name . ')');
         });
