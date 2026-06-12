@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Boot observers
         LoanApplication::observe(LoanApplicationObserver::class);
         Repayment::observe(RepaymentObserver::class);
         
